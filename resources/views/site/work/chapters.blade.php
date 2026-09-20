@@ -47,7 +47,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="Start an EPIC chapter"
+    <x-cta-band :page="$page" title="Start an EPIC chapter"
         text="We welcome expressions of interest from institutions and professionals who would like to host an EPIC international chapter."
         primary-label="Express interest" />
 @endsection

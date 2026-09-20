@@ -48,7 +48,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="Sign an MoU with EPIC"
+    <x-cta-band :page="$page" title="Sign an MoU with EPIC"
         text="Joint research, faculty collaboration, internships, co-publication, collaborative grant applications and more."
         primary-label="Discuss an MoU" />
 @endsection

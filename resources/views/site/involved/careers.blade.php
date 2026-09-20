@@ -56,7 +56,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="Other ways to work with EPIC"
+    <x-cta-band :page="$page" title="Other ways to work with EPIC"
         text="Volunteer, join our research network, or collaborate with us as an institution."
         primary-label="Volunteer with EPIC" :primary-url="route('involved.volunteer')"
         secondary-label="Contact us" :secondary-url="route('contact')" />

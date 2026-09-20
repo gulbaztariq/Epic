@@ -55,7 +55,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band
+    <x-cta-band :page="$page"
         title="Partner with EPIC"
         text="We collaborate with universities, think tanks, government institutions, development partners and the private sector."
         primary-label="Get in touch"

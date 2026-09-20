@@ -28,7 +28,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="Looking for a research or delivery partner?"
+    <x-cta-band :page="$page" title="Looking for a research or delivery partner?"
         text="EPIC combines research, policy engagement, academic expertise, entrepreneurship and implementation experience within one multidisciplinary platform."
         primary-label="Talk to our team" />
 @endsection

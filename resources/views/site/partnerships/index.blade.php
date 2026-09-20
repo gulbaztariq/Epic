@@ -65,7 +65,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="Propose a partnership"
+    <x-cta-band :page="$page" title="Propose a partnership"
         text="EPIC believes sustainable impact is built through collaboration. Tell us what you would like to build together."
         primary-label="Contact our partnerships team" />
 @endsection

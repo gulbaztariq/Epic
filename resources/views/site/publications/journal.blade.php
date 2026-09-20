@@ -54,7 +54,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="Submit to the EPIC journal"
+    <x-cta-band :page="$page" title="Submit to the EPIC journal"
         text="We welcome original research from academics, practitioners and policy professionals."
         primary-label="Submission enquiries" />
 @endsection

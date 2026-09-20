@@ -43,7 +43,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="Media enquiries"
+    <x-cta-band :page="$page" title="Media enquiries"
         text="Our team is available for interviews, expert comment and background briefings on economic policy, human capital, entrepreneurship and responsible AI."
         primary-label="Contact the media desk" />
 @endsection

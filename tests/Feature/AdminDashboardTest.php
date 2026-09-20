@@ -385,6 +385,49 @@ class AdminDashboardTest extends TestCase
             ->assertHeader('content-type', 'text/csv; charset=UTF-8');
     }
 
+    public function test_a_page_section_can_override_a_call_to_action_band(): void
+    {
+        $page = Page::where('slug', 'about-us')->firstOrFail();
+
+        $this->actingAs($this->admin)
+            ->post('/admin/page-sections', [
+                'page_id' => $page->id,
+                'type' => 'cta',
+                'heading' => 'Collaborate with our researchers',
+                'body' => 'Tell us what you would like to build together.',
+                'link_text' => 'Start a conversation',
+                'link_url' => '/contact',
+                'sort' => 1,
+                'is_active' => '1',
+            ])->assertRedirect('/admin/page-sections');
+
+        $this->get('/who-we-are')
+            ->assertOk()
+            ->assertSee('Collaborate with our researchers')
+            ->assertSee('Start a conversation')
+            ->assertDontSee('Partner with EPIC');
+    }
+
+    public function test_a_page_section_adds_content_to_a_page(): void
+    {
+        $page = Page::where('slug', 'about-us')->firstOrFail();
+
+        $this->actingAs($this->admin)
+            ->post('/admin/page-sections', [
+                'page_id' => $page->id,
+                'type' => 'text',
+                'heading' => 'Our approach to evidence',
+                'body' => '<p>We publish what we find, including inconvenient findings.</p>',
+                'sort' => 2,
+                'is_active' => '1',
+            ])->assertRedirect();
+
+        $this->get('/who-we-are')
+            ->assertOk()
+            ->assertSee('Our approach to evidence')
+            ->assertSee('including inconvenient findings', false);
+    }
+
     public function test_menu_changes_appear_on_the_website(): void
     {
         $this->actingAs($this->admin)

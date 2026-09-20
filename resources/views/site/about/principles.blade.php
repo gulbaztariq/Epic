@@ -36,7 +36,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="See these principles in practice" text="Explore the research, projects and dialogues that put EPIC's principles to work."
+    <x-cta-band :page="$page" title="See these principles in practice" text="Explore the research, projects and dialogues that put EPIC's principles to work."
         primary-label="Our publications" :primary-url="route('publications.index')"
         secondary-label="What we do" :secondary-url="route('work.themes')" />
 @endsection

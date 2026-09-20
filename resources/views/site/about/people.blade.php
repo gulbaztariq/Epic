@@ -59,7 +59,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="Join the EPIC network"
+    <x-cta-band :page="$page" title="Join the EPIC network"
         text="We welcome researchers, practitioners and institutions who share our commitment to evidence and impact."
         primary-label="Get involved" :primary-url="route('involved.volunteer')"
         secondary-label="See open roles" :secondary-url="route('involved.careers')" />

@@ -37,7 +37,7 @@
 
     @include('partials.sections')
 
-    <x-cta-band title="Commission a project with EPIC"
+    <x-cta-band :page="$page" title="Commission a project with EPIC"
         text="From policy research and labour-market assessments to entrepreneurship programmes and impact evaluations."
         primary-label="Start a conversation" />
 @endsection

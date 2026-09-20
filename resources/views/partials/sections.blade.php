@@ -94,12 +94,6 @@
             </section>
             @break
 
-        @case('cta')
-            <x-cta-band
-                :title="$block->heading ?: 'Work with EPIC'"
-                :text="$block->body ?: ''"
-                :primary-label="$block->link_text ?: 'Contact us'"
-                :primary-url="$block->link_url" />
-            @break
+        {{-- 'cta' blocks are rendered by the page's call-to-action band. --}}
     @endswitch
 @endforeach
