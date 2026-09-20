@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin
+Disallow: /uploads/volunteers/
+
+# Replace the domain below with the live website address after deployment.
+Sitemap: https://www.epic.org.pk/sitemap.xml

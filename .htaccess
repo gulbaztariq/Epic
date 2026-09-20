@@ -1,0 +1,36 @@
+# ---------------------------------------------------------------------------
+# EPIC website — root .htaccess
+#
+# Use this file ONLY when the whole project has been uploaded inside
+# public_html and the hosting account cannot point the domain's document root
+# at the project's /public folder. It forwards every request into /public.
+#
+# If you CAN set the document root to .../public (recommended on Hostinger),
+# this file is harmless and can be left in place or deleted.
+# ---------------------------------------------------------------------------
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Send everything into the public folder, without looping.
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Belt and braces: never serve application files directly.
+<FilesMatch "^(\.env|\.env\..*|\.gitignore|\.gitattributes|composer\.json|composer\.lock|artisan|phpunit\.xml|package\.json|README\.md|DEPLOYMENT\.md|CLAUDE\.md|AGENTS\.md)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    # Block direct access to application directories.
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor)/ - [F,L]
+</IfModule>

@@ -1,0 +1,150 @@
+# EPIC — Economic Policy and Innovation Centre
+
+The public website and super-admin dashboard for EPIC, built with **Laravel 13**
+and **PHP 8.3+**.
+
+Everything visible on the website — page headings, hero text, focus areas,
+publications, events, projects, people, partners, media, menus, contact details,
+logos and images — is stored in the database and editable from the dashboard at
+`/admin`. There is no build step: the theme is hand-written CSS, so the project
+deploys to shared hosting by uploading files.
+
+---
+
+## Quick start (local)
+
+```bash
+composer install
+cp .env.example .env
+php artisan epic:install      # key, database, starter content, upload folders
+php artisan serve
+```
+
+Then open:
+
+- Website — <http://localhost:8000>
+- Dashboard — <http://localhost:8000/admin>
+
+**Default super admin** (change the password after the first sign-in):
+
+```
+Email:    admin@epic.org.pk
+Password: EpicAdmin@2025
+```
+
+Set `EPIC_ADMIN_EMAIL` / `EPIC_ADMIN_PASSWORD` in `.env` before running
+`epic:install` to create the account with your own credentials instead.
+
+Run the test suite with `php artisan test`.
+
+## Deploying
+
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step Hostinger instructions.
+
+---
+
+## The website
+
+| Section | Pages |
+| --- | --- |
+| Who We Are | About Us · Vision & Mission · EPIC Principles · Our Strengths · EPIC Team · Board of Governance · Advisory Council |
+| What We Do | Themes of EPIC Work · Projects (+ detail pages) · International Chapters |
+| Events | Upcoming and past events (+ detail pages) |
+| Partnerships & MoUs | Partnerships · MoUs · Memberships |
+| Publications | Our Collection · Journal (HEC-recognized) · E-Newsletter · Blogs & Articles |
+| Get Involved | Careers (+ detail pages) · Volunteer · Subscribe · Contact |
+| Media | Press Releases · Podcast · YouTube · Gallery |
+| Other | Search, sitemap.xml, Privacy Policy, Terms of Use, 403/404/500 pages |
+
+Every page is responsive, uses the EPIC logo palette, and degrades gracefully
+when a section has no content yet.
+
+## The dashboard
+
+| Dashboard section | What it controls |
+| --- | --- |
+| **Pages** | Hero heading, eyebrow, hero image, intro, body copy, quote, buttons and SEO for each page |
+| **Page sections** | Extra blocks on any page (text, checklists, icon cards, image + text, quote, accordion, call to action) and the home page section headings |
+| **Navigation menus** | Header dropdowns, footer columns and the footer legal links |
+| **Focus areas** | The seven-icon strip on the home page |
+| **Content lists** | Reusable lists: principles, strengths, themes, project types, event types, partnership areas, MoU scope, memberships, entrepreneurship pillars, hero highlights |
+| **Data & insights** | The statistic tiles on the home page |
+| **Publications** | Reports, briefs, papers, journal issues and newsletters, with cover image and PDF |
+| **Events** | Dates, venue, format, registration link, image |
+| **Projects** | Project pages with status, partners and timeline |
+| **Blogs & press** | Blogs, articles and press releases |
+| **Team & councils** | EPIC Team, Board of Governance and Advisory Council profiles |
+| **Partners & MoUs** | Partner organisations, signed MoUs and memberships |
+| **International chapters** | Country chapters |
+| **Careers** | Vacancies, internships and fellowships |
+| **Podcast · Videos · Photo gallery** | Media library content |
+| **Media library** | Every uploaded file, with copyable URLs |
+| **Messages · Volunteers · Subscribers** | Form submissions, with CSV export for subscribers |
+| **Site settings** | Logos, favicon, site name, contact details, social links, footer text, header button, analytics snippets |
+| **Admin users** | Dashboard accounts and roles |
+
+Roles: **Super Admin** and **Administrator** can manage everything including
+settings and users; **Editor** can manage content only.
+
+---
+
+## How it is put together
+
+```
+app/
+  Http/Controllers/            Public site controllers
+  Http/Controllers/Admin/      Dashboard: auth, settings, media, inbox
+  Http/Controllers/Admin/Resources/   One small class per managed content type
+  Models/                      Eloquent models
+  Services/MediaService.php    Uploads: storing, resizing, deleting
+  Support/Icons.php            Inline SVG icon set (no icon font)
+  Support/helpers.php          setting(), epic_image(), rich(), icon() …
+resources/views/
+  layouts/site.blade.php       Public layout
+  layouts/admin.blade.php      Dashboard layout
+  site/                        Public pages
+  admin/resource/              The generic list + form screens
+  components/                  Reusable cards and blocks
+public/css/site.css            Website theme
+public/css/admin.css           Dashboard theme
+```
+
+### The CRUD engine
+
+Each dashboard content type is a short class extending
+`App\Http\Controllers\Admin\ResourceController`. It declares its fields and
+table columns; listing, forms, validation, image uploads, replacement and
+deletion are handled for it. Adding a new managed content type means adding a
+model, a migration and roughly forty lines of controller.
+
+### Uploads
+
+Files are written to `public/uploads/<folder>/` and served directly, so **no
+`storage:link` symlink is required** — which is what makes this work smoothly on
+shared hosting. Images wider than 2000px are resized automatically. Replacing or
+deleting a record deletes the old file.
+
+### Theme colours
+
+The palette lives in the `:root` block at the top of `public/css/site.css` (and
+mirrors it in `admin.css`):
+
+```css
+--navy: #13366e;   /* logo wordmark   */
+--blue: #0f6fc0;   /* logo swoosh     */
+--cyan: #00a8e8;
+--green: #41a62a;  /* logo leaf       */
+--lime: #7ac943;
+```
+
+Typography: *Playfair Display* for headings, *Inter* for body text and
+*Montserrat* for the brand lockup, loaded from Google Fonts with system
+fallbacks.
+
+### Starter content
+
+`php artisan epic:install` loads the real EPIC copy (about, vision, mission,
+principles, strengths, themes, project and event types, partnership areas,
+memberships and the international chapters) plus a handful of clearly-marked
+sample publications, events, projects and posts so the site looks complete from
+day one. Edit or delete the samples from the dashboard.

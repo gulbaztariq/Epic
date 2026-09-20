@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="Illustration of Islamabad with the Margalla Hills">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfe9f8"/>
+      <stop offset="0.55" stop-color="#e8f5fc"/>
+      <stop offset="1" stop-color="#f6fbfe"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.78" cy="0.16" r="0.42">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="far" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a9cde6"/>
+      <stop offset="1" stop-color="#c6e0ef"/>
+    </linearGradient>
+    <linearGradient id="mid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7cb0d3"/>
+      <stop offset="1" stop-color="#9cc6e0"/>
+    </linearGradient>
+    <linearGradient id="near" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4f8fbc"/>
+      <stop offset="1" stop-color="#6ea7c9"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4aa539"/>
+      <stop offset="1" stop-color="#2f7d33"/>
+    </linearGradient>
+    <linearGradient id="dome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dcebf6"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect width="1200" height="800" fill="url(#sun)"/>
+
+  <!-- soft clouds -->
+  <g fill="#ffffff" opacity="0.55">
+    <ellipse cx="200" cy="120" rx="120" ry="30"/>
+    <ellipse cx="270" cy="105" rx="80" ry="24"/>
+    <ellipse cx="880" cy="90" rx="140" ry="26"/>
+    <ellipse cx="1030" cy="150" rx="100" ry="22"/>
+  </g>
+
+  <!-- Margalla hills: far range -->
+  <path fill="url(#far)" d="M0 360 L120 300 L210 340 L330 265 L430 330 L540 270 L660 335 L780 280 L900 340 L1020 285 L1120 335 L1200 305 L1200 800 L0 800 Z"/>
+  <!-- mid range -->
+  <path fill="url(#mid)" d="M0 430 L140 365 L260 415 L400 340 L520 405 L640 355 L760 410 L900 350 L1040 410 L1200 360 L1200 800 L0 800 Z"/>
+  <!-- near range -->
+  <path fill="url(#near)" d="M0 505 L150 445 L300 495 L460 430 L620 490 L780 445 L940 500 L1100 450 L1200 490 L1200 800 L0 800 Z"/>
+
+  <!-- Faisal Mosque: four minarets -->
+  <g fill="url(#dome)" stroke="#bcd7e8" stroke-width="2">
+    <rect x="452" y="392" width="17" height="200" rx="6"/>
+    <rect x="731" y="392" width="17" height="200" rx="6"/>
+    <rect x="497" y="418" width="14" height="174" rx="5"/>
+    <rect x="689" y="418" width="14" height="174" rx="5"/>
+  </g>
+  <g fill="#41a62a">
+    <path d="M460.5 372 L469 396 L452 396 Z"/>
+    <path d="M739.5 372 L748 396 L731 396 Z"/>
+    <path d="M504 400 L511 421 L497 421 Z"/>
+    <path d="M696 400 L703 421 L689 421 Z"/>
+  </g>
+
+  <!-- mosque tent structure -->
+  <path fill="url(#dome)" stroke="#c3daea" stroke-width="2" d="M600 404 C 632 470 686 540 720 592 L480 592 C 514 540 568 470 600 404 Z"/>
+  <path fill="#eef6fb" d="M600 436 C 623 484 662 540 688 578 L512 578 C 538 540 577 484 600 436 Z"/>
+  <rect x="470" y="586" width="260" height="18" rx="6" fill="#dbeaf5"/>
+  <rect x="440" y="600" width="320" height="12" rx="5" fill="#cfe2f0"/>
+  <path fill="#41a62a" d="M600 388 L607 408 L593 408 Z"/>
+
+  <!-- city skyline, left and right -->
+  <g fill="#3a7fae" opacity="0.65">
+    <rect x="70" y="500" width="54" height="112" rx="3"/>
+    <rect x="136" y="472" width="40" height="140" rx="3"/>
+    <rect x="188" y="516" width="62" height="96" rx="3"/>
+    <rect x="262" y="486" width="36" height="126" rx="3"/>
+    <rect x="310" y="524" width="58" height="88" rx="3"/>
+    <rect x="836" y="516" width="58" height="96" rx="3"/>
+    <rect x="906" y="480" width="42" height="132" rx="3"/>
+    <rect x="960" y="508" width="66" height="104" rx="3"/>
+    <rect x="1040" y="490" width="38" height="122" rx="3"/>
+    <rect x="1090" y="522" width="60" height="90" rx="3"/>
+  </g>
+  <g fill="#ffffff" opacity="0.5">
+    <rect x="146" y="492" width="6" height="10"/><rect x="158" y="492" width="6" height="10"/>
+    <rect x="146" y="514" width="6" height="10"/><rect x="158" y="514" width="6" height="10"/>
+    <rect x="916" y="500" width="6" height="10"/><rect x="928" y="500" width="6" height="10"/>
+    <rect x="916" y="522" width="6" height="10"/><rect x="928" y="522" width="6" height="10"/>
+  </g>
+
+  <!-- tree canopy -->
+  <path fill="url(#green)" d="M0 612 C 80 596 150 626 230 610 C 310 594 380 624 460 612 C 540 600 610 626 690 612 C 770 598 840 626 920 612 C 1000 598 1090 624 1200 606 L1200 800 L0 800 Z"/>
+  <g fill="#35893a" opacity="0.7">
+    <circle cx="90" cy="646" r="30"/><circle cx="158" cy="654" r="24"/><circle cx="350" cy="650" r="26"/>
+    <circle cx="470" cy="658" r="20"/><circle cx="640" cy="654" r="22"/><circle cx="790" cy="646" r="28"/>
+    <circle cx="1010" cy="652" r="24"/><circle cx="1128" cy="644" r="30"/>
+  </g>
+  <path fill="#276b2c" d="M0 690 C 140 672 260 700 400 686 C 540 672 660 700 800 686 C 940 672 1060 700 1200 682 L1200 800 L0 800 Z"/>
+</svg>
