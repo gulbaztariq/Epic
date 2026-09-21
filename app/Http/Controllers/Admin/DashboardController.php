@@ -15,12 +15,15 @@ use App\Models\Subscriber;
 use App\Models\TeamMember;
 use App\Models\Visit;
 use App\Models\VolunteerApplication;
+use App\Services\WebScheduler;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(WebScheduler $scheduler)
     {
         return view('admin.dashboard', [
+            'schedule' => $scheduler->status(),
+            'schedulerEnabled' => $scheduler->isEnabled(),
             'tiles' => [
                 ['label' => 'Publications', 'value' => Publication::count(), 'icon' => 'book', 'route' => 'admin.publications.index'],
                 ['label' => 'Events', 'value' => Event::count(), 'icon' => 'calendar', 'route' => 'admin.events.index', 'tone' => 'is-green'],

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryImageController;
 use App\Http\Controllers\Admin\InboxController;
+use App\Http\Controllers\Admin\MaintenanceController;
 use App\Http\Controllers\Admin\MediaLibraryController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\Resources;
@@ -117,10 +118,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Site settings (restricted to super admins and administrators)
+        // Site settings and housekeeping (super admins and administrators)
         Route::middleware('can:manage-system')->group(function () {
             Route::get('settings/{group?}', [SettingController::class, 'edit'])->name('settings');
             Route::put('settings/{group}', [SettingController::class, 'update'])->name('settings.update');
+
+            Route::post('maintenance/refresh-caches', [MaintenanceController::class, 'refreshCaches'])->name('maintenance.caches');
+            Route::post('maintenance/run-tasks', [MaintenanceController::class, 'runSchedule'])->name('maintenance.tasks');
         });
 
         // Visitor analytics

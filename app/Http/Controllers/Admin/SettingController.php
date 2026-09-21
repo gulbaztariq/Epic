@@ -91,6 +91,7 @@ class SettingController extends Controller
                     'show_visitor_counter' => ['label' => 'Show the counter on the website', 'type' => 'select', 'col' => 4, 'options' => self::YES_NO, 'hint' => 'Appears in the footer.'],
                     'visitor_counter_metric' => ['label' => 'Counter shows', 'type' => 'select', 'col' => 4, 'options' => ['visitors' => 'Visitors', 'views' => 'Page views'], 'hint' => 'Visitors counts people; page views counts pages opened.'],
                     'visitor_counter_label' => ['label' => 'Counter label', 'type' => 'text', 'col' => 4, 'placeholder' => 'Website visitors'],
+                    'web_scheduler_enabled' => ['label' => 'Run scheduled tasks on page visits', 'type' => 'select', 'col' => 8, 'options' => self::YES_NO, 'hint' => 'Leave this on if your hosting has no cron job — location lookups and tidying then happen quietly after a page is served. Safe to leave on even with cron.'],
                 ],
             ],
             'integrations' => [

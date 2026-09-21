@@ -109,36 +109,73 @@ EPIC_ADMIN_PASSWORD=change-this-to-something-strong
 
 ## 4. Install the site
 
-Run this once, from the project folder:
+Pick whichever matches your hosting. **If your plan has no SSH and no cron
+jobs, use Option 1** — it needs nothing but a browser.
+
+### Option 1 — install from your browser (no SSH, no cron)
+
+1. In `.env`, set a long random secret:
+
+   ```dotenv
+   EPIC_INSTALL_TOKEN=put-a-long-random-string-here
+   ```
+
+2. Open `https://your-domain.com/install.php?token=put-a-long-random-string-here`
+3. Press **Install the website** and wait a few seconds.
+
+It creates the tables, loads the pages, menus and starter content, creates your
+dashboard account and caches the configuration — then **deletes itself**. Without
+the secret the page refuses to do anything, and if the secret is missing from
+`.env` it suggests one for you.
+
+If it reports a problem, fix what it names and press install again — it is safe
+to re-run.
+
+### Option 2 — from the command line (SSH)
 
 ```bash
+cd ~/domains/your-domain.com/public_html
 php artisan epic:install --optimize
 ```
 
-It generates the application key, creates every table, loads the pages, menus
-and starter content, creates the upload folders and caches the configuration.
+Check `php -v` first: the site needs PHP 8.3 or newer.
 
-**No SSH access?** Use hPanel → **Advanced → Cron Jobs** to run it once:
+### Option 3 — a one-off cron job
+
+hPanel → **Advanced → Cron Jobs**, set to every minute:
 
 ```
 /usr/bin/php /home/u123456789/domains/your-domain.com/public_html/artisan epic:install --optimize --no-interaction
 ```
 
-Set it to run every minute, wait for it to fire, then delete the cron job.
+Wait for it to fire, confirm the site loads, then delete the cron job.
 
-## 5. Add the cron job
+## 5. Keep the scheduled work running
 
-The visitor statistics need one cron entry. hPanel → **Advanced → Cron Jobs**,
-set it to run **every minute**:
+Two jobs run in the background: visitor locations are looked up every 15
+minutes, and expired visitor records are cleared out daily.
+
+### If your plan has cron jobs
+
+Add one entry, every minute — this is the most reliable option:
 
 ```
 cd /home/u123456789/domains/your-domain.com/public_html && /usr/bin/php artisan schedule:run >> /dev/null 2>&1
 ```
 
-That single entry runs everything on a schedule: visitor locations are looked up
-every 15 minutes and records older than the retention period are cleared out
-each night. Without it the site still counts visitors — you just have to press
-**Resolve locations** on the analytics screen to fill in countries and cities.
+### If it does not
+
+**Nothing to do — the site already handles it.** When cron is unavailable the
+work runs quietly after a page has been served to a visitor, at most once every
+five minutes, and never in a way a visitor waits for. You can see when each job
+last ran, and run them on demand, under **Dashboard → Housekeeping**.
+
+That setting lives in **Site settings → Analytics → "Run scheduled tasks on page
+visits"**. It is on by default and safe to leave on even if you later add a cron
+job, because each job records when it last ran.
+
+The only difference on a very quiet site is timing: locations are resolved the
+next time somebody visits, rather than on the quarter hour.
 
 ## 6. Permissions
 
@@ -172,8 +209,10 @@ php artisan optimize          # re-cache for production
 php artisan migrate --force   # only if the database changed
 ```
 
-If you edit `.env`, always run `php artisan optimize:clear` afterwards —
-otherwise the old cached configuration is still used.
+If you edit `.env`, the cached configuration must be rebuilt or the old values
+stay live. With SSH run `php artisan optimize:clear`. Without SSH, use
+**Dashboard → Housekeeping → Refresh caches**, which does exactly the same
+thing.
 
 ## Backups
 
@@ -196,6 +235,10 @@ statistics live in the database, so the database export covers them too.
 | Images upload but do not show | `public/uploads` is not writable (set `775`), or `APP_URL` does not match the real domain. |
 | Login says credentials do not match | Reset the password: `php artisan tinker --execute="\App\Models\User::where('email','admin@your-domain.com')->update(['password'=>bcrypt('new-password')]);"` |
 | Forms save but no email arrives | SMTP is not configured. Submissions are still safe in **Dashboard → Messages**. |
+| No SSH and no cron on my plan | Use the browser installer in step 4, Option 1. Scheduled work then runs automatically on page visits — see step 5. |
+| Changed `.env` but nothing changed | The configuration is cached. **Dashboard → Housekeeping → Refresh caches**, or `php artisan optimize:clear`. |
+| `install.php` says "Installer locked" | `EPIC_INSTALL_TOKEN` is empty in `.env`. The page suggests a secret — paste it in, save, reload. |
+| `install.php` returns 404 | It has already installed the site and removed itself. Sign in at `/admin`. |
 | Visitor countries stay empty | The cron job in step 5 is missing, or outbound HTTPS is blocked. Press **Resolve locations** on the analytics screen to test it. |
 | Visitor counts look wrong by a few hours | `APP_TIMEZONE` is not set to your local zone. Set it, then run `php artisan optimize:clear`. |
 | 404 on every page except the home page | `mod_rewrite` / `.htaccess` is not being read. Confirm `public/.htaccess` was uploaded (hidden files must be visible in File Manager). |

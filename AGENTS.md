@@ -23,6 +23,11 @@ Read `README.md` for the feature map and `DEPLOYMENT.md` for Hostinger.
   `terminate()`, never in `handle()`, and `VisitorTracker::track()` swallows its
   own errors — analytics must never slow down or break a page. External lookups
   belong in `epic:resolve-visitor-locations`, never in a request.
+- **Assume no SSH and no cron on the server.** Anything an operator might need
+  belongs either in `public/install.php` (first run only, token-protected,
+  self-deleting) or behind the dashboard's Housekeeping panel. Recurring work
+  goes through `App\Services\WebScheduler`, which records its own last-run
+  times, so adding a task there needs no cron.
 - **Do not name a model method after one of its columns** (for example
   `ListItem::group()` clashed with the `group` column and broke attribute
   access). Use `inGroup()`, `scopeX()` or similar.

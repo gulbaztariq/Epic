@@ -111,6 +111,61 @@
         </div>
     </div>
 
+    @can('manage-system')
+        <div class="card" style="margin-top:20px">
+            <div class="card-head">
+                <h3>Housekeeping</h3>
+                <span class="badge {{ $schedulerEnabled ? 'badge-green' : 'badge-grey' }}">
+                    {{ $schedulerEnabled ? 'Running without cron' : 'Waiting for cron' }}
+                </span>
+            </div>
+
+            <div class="card-body">
+                <p style="font-size:.88rem;color:var(--muted);max-width:80ch">
+                    These are the jobs that normally run from a terminal. You only need them if your
+                    hosting has no SSH access — everything here is otherwise automatic.
+                </p>
+
+                <div class="table-wrap" style="margin:14px 0">
+                    <table class="data">
+                        <thead><tr><th>Task</th><th>Runs</th><th>Last run</th></tr></thead>
+                        <tbody>
+                            @foreach ($schedule as $task)
+                                <tr>
+                                    <td><span class="row-title">{{ $task['label'] }}</span></td>
+                                    <td>{{ $task['every'] >= 86400 ? 'Daily' : 'Every '.round($task['every'] / 60).' minutes' }}</td>
+                                    <td>
+                                        @if ($task['last_run'])
+                                            {{ $task['last_run']->diffForHumans() }}
+                                            <span class="row-sub">{{ $task['last_run']->format('d M Y, H:i') }}</span>
+                                        @else
+                                            <span class="badge badge-amber">Not yet</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                    <form action="{{ route('admin.maintenance.tasks') }}" method="post">
+                        @csrf
+                        <button class="btn btn-outline" type="submit">{!! icon('clock') !!} Run tasks now</button>
+                    </form>
+
+                    <form action="{{ route('admin.maintenance.caches') }}" method="post"
+                          data-confirm="Clear and rebuild the caches? Use this after editing the .env file.">
+                        @csrf
+                        <button class="btn btn-outline" type="submit">{!! icon('gear') !!} Refresh caches</button>
+                    </form>
+
+                    <a class="btn btn-outline" href="{{ route('admin.settings', 'analytics') }}">{!! icon('sparkle') !!} Task settings</a>
+                </div>
+            </div>
+        </div>
+    @endcan
+
     <div class="grid grid-2" style="margin-top:20px">
         <div class="card">
             <div class="card-head">

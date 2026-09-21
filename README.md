@@ -41,6 +41,17 @@ Run the test suite with `php artisan test`.
 
 See **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step Hostinger instructions.
 
+Neither SSH nor cron is required:
+
+- **Installing** — set `EPIC_INSTALL_TOKEN` in `.env` and open
+  `/install.php?token=…` in a browser. It creates the tables, loads the content,
+  creates the admin account, caches the config, then deletes itself. It refuses
+  to run without that secret.
+- **Scheduled work** — when cron is unavailable, due jobs run after a page has
+  been served (at most one check every five minutes, always after the response).
+  **Dashboard → Housekeeping** shows when each last ran and can run them on
+  demand, and also rebuilds the caches after an `.env` change.
+
 ---
 
 ## The website
@@ -82,6 +93,7 @@ when a section has no content yet.
 | **Visitor overview** | Traffic reports for any date range: page views, visitors, sessions, first-time visits, countries, a day-by-day (or hour-by-hour) chart, most-read pages, countries, cities, traffic sources, devices, browsers and operating systems |
 | **Visitor log** | Every recorded page view, filterable by date, country, device and page |
 | **Messages · Volunteers · Subscribers** | Form submissions, with CSV export for subscribers |
+| **Housekeeping** | For hosting without SSH: run the scheduled jobs on demand and rebuild the caches after editing `.env` (super admins and administrators) |
 | **Site settings** | Logos, favicon, site name, contact details, social links, footer text, header button, analytics snippets |
 | **Admin users** | Dashboard accounts and roles |
 
@@ -152,8 +164,9 @@ that does the same thing on demand. To use a different provider, change
 
 Old records are deleted by `php artisan epic:prune-visits` according to the
 retention setting (365 days by default; `0` keeps everything). Both commands run
-from Laravel's scheduler — see `routes/console.php` — which needs the single
-cron entry described in DEPLOYMENT.md.
+from Laravel's scheduler — see `routes/console.php` — driven either by the single
+cron entry described in DEPLOYMENT.md or, where cron is unavailable, by
+`App\Services\WebScheduler` after a page response.
 
 Reports and "today" follow `APP_TIMEZONE`, so set it to your local zone (for
 example `Asia/Karachi`) before the site goes live.

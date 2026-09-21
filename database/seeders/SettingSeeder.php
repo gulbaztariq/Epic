@@ -48,6 +48,7 @@ class SettingSeeder extends Seeder
             'show_visitor_counter' => ['1', 'analytics', 7],
             'visitor_counter_metric' => ['visitors', 'analytics', 8],
             'visitor_counter_label' => ['Website visitors', 'analytics', 9],
+            'web_scheduler_enabled' => ['1', 'analytics', 10],
 
             // Social (left blank until the organisation shares its handles)
             'social_linkedin' => ['', 'social', 1],
