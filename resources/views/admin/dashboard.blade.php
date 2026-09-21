@@ -25,6 +25,26 @@
         </div>
     @endif
 
+    {{-- Visitors at a glance --}}
+    <div class="stat-row">
+        <div class="stat">
+            <span class="stat-label">Visitors today</span>
+            <strong class="stat-value">{{ number_format($analytics['visitors_today']) }}</strong>
+            <span class="stat-delta"><small>{{ number_format($analytics['views_today']) }} page views</small></span>
+        </div>
+        <div class="stat">
+            <span class="stat-label">Visitors (30 days)</span>
+            <strong class="stat-value">{{ number_format($analytics['visitors_month']) }}</strong>
+            <span class="stat-delta"><small>{{ number_format($analytics['views_month']) }} page views</small></span>
+        </div>
+        <div class="stat" style="justify-content:center">
+            <span class="stat-label">Visitor reports</span>
+            <a class="btn btn-blue btn-sm" href="{{ route('admin.analytics.index') }}" style="align-self:flex-start;margin-top:6px">
+                {!! icon('trending-up') !!} Open analytics
+            </a>
+        </div>
+    </div>
+
     <div class="grid grid-4">
         @foreach ($tiles as $tile)
             <a class="tile {{ $tile['tone'] ?? '' }}" href="{{ route($tile['route']) }}">

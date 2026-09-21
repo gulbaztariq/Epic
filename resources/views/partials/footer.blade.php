@@ -54,6 +54,21 @@
     <div class="container">
         <div class="footer-bottom">
             <p style="margin:0">&copy; {{ date('Y') }} {{ setting('site_name_full', 'Economic Policy and Innovation Centre (EPIC)') }}. {{ setting('footer_rights', 'All rights reserved.') }}</p>
+
+            @if (setting('show_visitor_counter', '1') === '1')
+                @php
+                    $counterIsViews = setting('visitor_counter_metric', 'visitors') === 'views';
+                    $counterValue = $counterIsViews
+                        ? \App\Models\Visit::totalPageViews()
+                        : \App\Models\Visit::totalVisitors();
+                @endphp
+                <p class="visitor-counter" title="Since the website went live">
+                    {!! icon($counterIsViews ? 'eye' : 'people') !!}
+                    <strong>{{ number_format($counterValue) }}</strong>
+                    <span>{{ setting('visitor_counter_label', $counterIsViews ? 'Page views' : 'Website visitors') }}</span>
+                </p>
+            @endif
+
             <ul>
                 @foreach ($legal as $item)
                     <li><a href="{{ $item->resolvedUrl() }}">{{ $item->label }}</a></li>

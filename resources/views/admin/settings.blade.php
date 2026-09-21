@@ -27,7 +27,13 @@
                         <div class="field col-{{ $meta['col'] ?? 12 }}">
                             <label for="s-{{ $key }}">{!! $meta['label'] !!}</label>
 
-                            @if ($meta['type'] === 'textarea')
+                            @if ($meta['type'] === 'select')
+                                <select class="control" id="s-{{ $key }}" name="{{ $key }}">
+                                    @foreach ($meta['options'] as $optValue => $optLabel)
+                                        <option value="{{ $optValue }}" @selected((string) $value === (string) $optValue)>{{ $optLabel }}</option>
+                                    @endforeach
+                                </select>
+                            @elseif ($meta['type'] === 'textarea')
                                 <textarea class="control" id="s-{{ $key }}" name="{{ $key }}" rows="{{ $meta['rows'] ?? 4 }}"
                                           placeholder="{{ $meta['placeholder'] ?? '' }}">{{ $value }}</textarea>
                             @elseif ($meta['type'] === 'image')

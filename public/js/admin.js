@@ -121,3 +121,77 @@
         });
     });
 })();
+
+/* Analytics chart hover: crosshair + tooltip on the time series. */
+(function () {
+    'use strict';
+
+    var d = document;
+    function all(sel, root) { return Array.prototype.slice.call((root || d).querySelectorAll(sel)); }
+    function esc(text) {
+        return String(text).replace(/[&<>"']/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+    }
+
+    all('[data-chart]').forEach(function (wrap) {
+        var id = wrap.getAttribute('data-chart');
+        var payload = d.querySelector('[data-chart-points="' + id + '"]');
+        var tooltip = wrap.querySelector('.chart-tooltip');
+        var crosshair = wrap.querySelector('.chart-crosshair');
+        var points;
+
+        if (!payload || !tooltip) { return; }
+
+        try {
+            points = JSON.parse(payload.textContent);
+        } catch (e) {
+            return;
+        }
+
+        function hide() {
+            tooltip.hidden = true;
+            if (crosshair) { crosshair.style.opacity = 0; }
+        }
+
+        all('.chart-hit', wrap).forEach(function (hit) {
+            function show() {
+                var row = points[parseInt(hit.getAttribute('data-index'), 10)];
+                if (!row) { return; }
+
+                var html = '<strong>' + esc(row.label) + '</strong>';
+                row.values.forEach(function (value) {
+                    html += '<div class="tip-row"><i style="background:' + esc(value.color) + '"></i>'
+                        + '<span>' + esc(value.label) + '</span>'
+                        + '<b>' + Number(value.value).toLocaleString() + '</b></div>';
+                });
+
+                tooltip.innerHTML = html;
+                tooltip.hidden = false;
+
+                var wrapBox = wrap.getBoundingClientRect();
+                var hitBox = hit.getBoundingClientRect();
+                var centre = hitBox.left - wrapBox.left + hitBox.width / 2;
+                var half = tooltip.offsetWidth / 2;
+
+                tooltip.style.left = Math.min(Math.max(centre, half + 4), wrapBox.width - half - 4) + 'px';
+                tooltip.style.top = Math.max(tooltip.offsetHeight + 8, hitBox.height * 0.45) + 'px';
+
+                if (crosshair) {
+                    var x = hit.getAttribute('data-centre');
+                    crosshair.setAttribute('x1', x);
+                    crosshair.setAttribute('x2', x);
+                    crosshair.style.opacity = 1;
+                }
+            }
+
+            hit.addEventListener('mouseenter', show);
+            hit.addEventListener('mousemove', show);
+            hit.addEventListener('touchstart', show, { passive: true });
+            hit.addEventListener('focus', show);
+        });
+
+        wrap.addEventListener('mouseleave', hide);
+        wrap.addEventListener('touchend', hide);
+    });
+})();

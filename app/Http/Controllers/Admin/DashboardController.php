@@ -13,6 +13,7 @@ use App\Models\Project;
 use App\Models\Publication;
 use App\Models\Subscriber;
 use App\Models\TeamMember;
+use App\Models\Visit;
 use App\Models\VolunteerApplication;
 
 class DashboardController extends Controller
@@ -29,6 +30,12 @@ class DashboardController extends Controller
                 ['label' => 'Partners & MoUs', 'value' => Partner::count(), 'icon' => 'partnership', 'route' => 'admin.partners.index', 'tone' => 'is-navy'],
                 ['label' => 'Photo albums', 'value' => GalleryAlbum::count(), 'icon' => 'image', 'route' => 'admin.gallery-albums.index'],
                 ['label' => 'Subscribers', 'value' => Subscriber::count(), 'icon' => 'mail', 'route' => 'admin.subscribers', 'tone' => 'is-green'],
+            ],
+            'analytics' => [
+                'views_today' => Visit::humans()->whereDate('visited_at', today())->count(),
+                'visitors_today' => Visit::humans()->whereDate('visited_at', today())->distinct('visitor_key')->count('visitor_key'),
+                'views_month' => Visit::humans()->where('visited_at', '>=', today()->subDays(29))->count(),
+                'visitors_month' => Visit::humans()->where('visited_at', '>=', today()->subDays(29))->distinct('visitor_key')->count('visitor_key'),
             ],
             'unreadMessages' => ContactMessage::where('is_read', false)->count(),
             'unreadVolunteers' => VolunteerApplication::where('is_read', false)->count(),

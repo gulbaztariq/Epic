@@ -6,6 +6,10 @@
         'Overview' => [
             ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'grid', 'pattern' => 'admin.dashboard'],
         ],
+        'Analytics' => [
+            ['route' => 'admin.analytics.index', 'label' => 'Visitor overview', 'icon' => 'trending-up', 'pattern' => 'admin.analytics.index'],
+            ['route' => 'admin.analytics.visitors', 'label' => 'Visitor log', 'icon' => 'people', 'pattern' => 'admin.analytics.visitors'],
+        ],
         'Website content' => [
             ['route' => 'admin.pages.index', 'label' => 'Pages', 'icon' => 'document', 'pattern' => 'admin.pages.*'],
             ['route' => 'admin.page-sections.index', 'label' => 'Page sections', 'icon' => 'layers', 'pattern' => 'admin.page-sections.*'],

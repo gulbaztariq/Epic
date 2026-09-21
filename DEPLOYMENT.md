@@ -56,6 +56,7 @@ APP_ENV=production
 APP_KEY=
 APP_DEBUG=false
 APP_URL=https://your-domain.com
+APP_TIMEZONE=Asia/Karachi
 
 DB_CONNECTION=mysql
 DB_HOST=localhost
@@ -106,7 +107,21 @@ and starter content, creates the upload folders and caches the configuration.
 
 Set it to run every minute, wait for it to fire, then delete the cron job.
 
-## 5. Permissions
+## 5. Add the cron job
+
+The visitor statistics need one cron entry. hPanel → **Advanced → Cron Jobs**,
+set it to run **every minute**:
+
+```
+cd /home/u123456789/domains/your-domain.com/public_html && /usr/bin/php artisan schedule:run >> /dev/null 2>&1
+```
+
+That single entry runs everything on a schedule: visitor locations are looked up
+every 15 minutes and records older than the retention period are cleared out
+each night. Without it the site still counts visitors — you just have to press
+**Resolve locations** on the analytics screen to fill in countries and cities.
+
+## 6. Permissions
 
 `storage/` and `bootstrap/cache/` must be writable, and `public/uploads/` must
 be writable so the dashboard can save images:
@@ -118,7 +133,7 @@ chmod -R 775 storage bootstrap/cache public/uploads
 In File Manager: right-click each folder → **Permissions** → `775`, tick
 "apply to subdirectories".
 
-## 6. Secure the site
+## 7. Secure the site
 
 1. hPanel → **Security → SSL** — install the free SSL certificate.
 2. Turn on **Force HTTPS**.
@@ -146,7 +161,8 @@ otherwise the old cached configuration is still used.
 - **Database:** hPanel → Databases → phpMyAdmin → Export.
 - **Uploaded images and documents:** back up the `public/uploads` folder.
 
-Those two cover everything an editor has created; the rest is code.
+Those two cover everything an editor has created; the rest is code. Visitor
+statistics live in the database, so the database export covers them too.
 
 ---
 
@@ -161,4 +177,6 @@ Those two cover everything an editor has created; the rest is code.
 | Images upload but do not show | `public/uploads` is not writable (set `775`), or `APP_URL` does not match the real domain. |
 | Login says credentials do not match | Reset the password: `php artisan tinker --execute="\App\Models\User::where('email','admin@your-domain.com')->update(['password'=>bcrypt('new-password')]);"` |
 | Forms save but no email arrives | SMTP is not configured. Submissions are still safe in **Dashboard → Messages**. |
+| Visitor countries stay empty | The cron job in step 5 is missing, or outbound HTTPS is blocked. Press **Resolve locations** on the analytics screen to test it. |
+| Visitor counts look wrong by a few hours | `APP_TIMEZONE` is not set to your local zone. Set it, then run `php artisan optimize:clear`. |
 | 404 on every page except the home page | `mod_rewrite` / `.htaccess` is not being read. Confirm `public/.htaccess` was uploaded (hidden files must be visible in File Manager). |

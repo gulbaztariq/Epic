@@ -38,6 +38,17 @@ class SettingSeeder extends Seeder
             'footer_tagline' => ["Ideas\nPeople\nProsperity", 'footer', 2],
             'footer_rights' => ['All rights reserved.', 'footer', 3],
 
+            // Analytics
+            'analytics_enabled' => ['1', 'analytics', 1],
+            'analytics_track_bots' => ['1', 'analytics', 2],
+            'analytics_geolocation' => ['1', 'analytics', 3],
+            'analytics_store_full_ip' => ['0', 'analytics', 4],
+            'analytics_respect_dnt' => ['0', 'analytics', 5],
+            'analytics_retention_days' => ['365', 'analytics', 6],
+            'show_visitor_counter' => ['1', 'analytics', 7],
+            'visitor_counter_metric' => ['visitors', 'analytics', 8],
+            'visitor_counter_label' => ['Website visitors', 'analytics', 9],
+
             // Social (left blank until the organisation shares its handles)
             'social_linkedin' => ['', 'social', 1],
             'social_x' => ['', 'social', 2],

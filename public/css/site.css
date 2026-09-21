@@ -1221,3 +1221,20 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
     font-size: 1.7rem; line-height: 1; cursor: pointer;
 }
 .lightbox-close:hover { background: rgba(255,255,255,.28); }
+
+/* Visitor counter (footer) */
+.visitor-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0;
+    padding: 7px 15px;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, .08);
+    border: 1px solid rgba(255, 255, 255, .12);
+    font-size: .82rem;
+    color: rgba(255, 255, 255, .72);
+    white-space: nowrap;
+}
+.visitor-counter svg { width: 16px; height: 16px; color: var(--lime); flex: none; }
+.visitor-counter strong { color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }

@@ -79,6 +79,8 @@ when a section has no content yet.
 | **Careers** | Vacancies, internships and fellowships |
 | **Podcast · Videos · Photo gallery** | Media library content |
 | **Media library** | Every uploaded file, with copyable URLs |
+| **Visitor overview** | Traffic reports for any date range: page views, visitors, sessions, first-time visits, countries, a day-by-day (or hour-by-hour) chart, most-read pages, countries, cities, traffic sources, devices, browsers and operating systems |
+| **Visitor log** | Every recorded page view, filterable by date, country, device and page |
 | **Messages · Volunteers · Subscribers** | Form submissions, with CSV export for subscribers |
 | **Site settings** | Logos, favicon, site name, contact details, social links, footer text, header button, analytics snippets |
 | **Admin users** | Dashboard accounts and roles |
@@ -123,6 +125,41 @@ Files are written to `public/uploads/<folder>/` and served directly, so **no
 `storage:link` symlink is required** — which is what makes this work smoothly on
 shared hosting. Images wider than 2000px are resized automatically. Replacing or
 deleting a record deletes the old file.
+
+### Visitor analytics
+
+Every page view of the public website is recorded in the `visits` table by
+`TrackVisitors` middleware. The work happens in the middleware's `terminate()`
+method — after the response has already been sent — so pages are not slowed
+down. Dashboard pages, `sitemap.xml`, `/up`, asset paths and form submissions
+are never counted; crawlers are recorded but flagged, and left out of the
+reports unless you tick **Include bots**.
+
+Each visit stores the page, title, referrer, device type, browser, operating
+system, language, an approximate location, and a hashed visitor and session key
+(so the same person can be recognised without storing anything identifying).
+**IP addresses are shortened** — `203.0.113.42` becomes `203.0.113.0` — unless
+full addresses are switched on in **Site settings → Analytics**.
+
+Locations are resolved out of band: an unknown address is queued in
+`ip_locations` and looked up by `php artisan epic:resolve-visitor-locations`
+(scheduled every 15 minutes) using [ipwho.is](https://ipwho.is), which is free
+and needs no API key. Each address is looked up once and reused, and a
+`CF-IPCountry` header from Cloudflare is used immediately when present. If the
+server has no cron job, the overview screen has a **Resolve locations** button
+that does the same thing on demand. To use a different provider, change
+`GeoLocator::ENDPOINT` and `mapResponse()`.
+
+Old records are deleted by `php artisan epic:prune-visits` according to the
+retention setting (365 days by default; `0` keeps everything). Both commands run
+from Laravel's scheduler — see `routes/console.php` — which needs the single
+cron entry described in DEPLOYMENT.md.
+
+Reports and "today" follow `APP_TIMEZONE`, so set it to your local zone (for
+example `Asia/Karachi`) before the site goes live.
+
+The public footer shows a visitor counter, which can be switched off, relabelled,
+or set to show page views instead — all under **Site settings → Analytics**.
 
 ### Theme colours
 

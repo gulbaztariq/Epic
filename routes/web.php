@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GalleryImageController;
@@ -122,6 +123,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('settings/{group}', [SettingController::class, 'update'])->name('settings.update');
         });
 
+        // Visitor analytics
+        Route::prefix('analytics')->name('analytics.')->group(function () {
+            Route::get('/', [AnalyticsController::class, 'index'])->name('index');
+            Route::get('visitors', [AnalyticsController::class, 'visitors'])->name('visitors');
+            Route::get('export', [AnalyticsController::class, 'export'])->name('export');
+            Route::post('resolve-locations', [AnalyticsController::class, 'resolve'])->name('resolve');
+        });
+
         Route::get('media-library', [MediaLibraryController::class, 'index'])->name('media.index');
         Route::post('media-library', [MediaLibraryController::class, 'store'])->name('media.store');
         Route::delete('media-library/{media}', [MediaLibraryController::class, 'destroy'])->name('media.destroy');
@@ -177,3 +186,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         }
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| Unknown addresses
+|--------------------------------------------------------------------------
+| Handled inside the web group so the branded page is shown and the broken
+| link is recorded in the visitor log.
+*/
+
+Route::fallback(fn () => response()->view('errors.404', [], 404));

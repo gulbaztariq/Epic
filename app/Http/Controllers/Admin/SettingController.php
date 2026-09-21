@@ -6,9 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Services\MediaService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SettingController extends Controller
 {
+    /** Reusable on/off options for select settings. */
+    public const YES_NO = ['1' => 'Yes', '0' => 'No'];
+
     /**
      * Every editable site setting, grouped into the dashboard's tabs.
      */
@@ -74,6 +78,21 @@ class SettingController extends Controller
                     'footer_rights' => ['label' => 'Rights statement', 'type' => 'text', 'col' => 12],
                 ],
             ],
+            'analytics' => [
+                'label' => 'Analytics',
+                'icon' => 'chart',
+                'fields' => [
+                    'analytics_enabled' => ['label' => 'Count visitors', 'type' => 'select', 'col' => 4, 'options' => self::YES_NO, 'hint' => 'Records a row for each page view of the public website.'],
+                    'analytics_track_bots' => ['label' => 'Record crawlers and bots', 'type' => 'select', 'col' => 4, 'options' => self::YES_NO, 'hint' => 'Kept separately — reports show real people unless you tick "include bots".'],
+                    'analytics_geolocation' => ['label' => 'Look up visitor locations', 'type' => 'select', 'col' => 4, 'options' => self::YES_NO, 'hint' => 'Country, region and city, resolved in the background by the scheduled task.'],
+                    'analytics_store_full_ip' => ['label' => 'Store full IP addresses', 'type' => 'select', 'col' => 4, 'options' => self::YES_NO, 'hint' => 'Off is recommended: the last part of each address is replaced with 0 before it is saved.'],
+                    'analytics_respect_dnt' => ['label' => 'Honour "Do Not Track"', 'type' => 'select', 'col' => 4, 'options' => self::YES_NO],
+                    'analytics_retention_days' => ['label' => 'Keep visitor records for (days)', 'type' => 'text', 'col' => 4, 'hint' => 'Older records are deleted by the daily task. Use 0 to keep them indefinitely.'],
+                    'show_visitor_counter' => ['label' => 'Show the counter on the website', 'type' => 'select', 'col' => 4, 'options' => self::YES_NO, 'hint' => 'Appears in the footer.'],
+                    'visitor_counter_metric' => ['label' => 'Counter shows', 'type' => 'select', 'col' => 4, 'options' => ['visitors' => 'Visitors', 'views' => 'Page views'], 'hint' => 'Visitors counts people; page views counts pages opened.'],
+                    'visitor_counter_label' => ['label' => 'Counter label', 'type' => 'text', 'col' => 4, 'placeholder' => 'Website visitors'],
+                ],
+            ],
             'integrations' => [
                 'label' => 'Integrations',
                 'icon' => 'cpu',
@@ -106,7 +125,11 @@ class SettingController extends Controller
 
         $request->validate(collect($fields)
             ->mapWithKeys(fn ($meta, $key) => [
-                $key => $meta['type'] === 'image' ? ['nullable', 'image', 'max:4096'] : ['nullable', 'string', 'max:5000'],
+                $key => match ($meta['type']) {
+                    'image' => ['nullable', 'image', 'max:4096'],
+                    'select' => ['required', Rule::in(array_keys($meta['options']))],
+                    default => ['nullable', 'string', 'max:5000'],
+                },
             ])
             ->all());
 

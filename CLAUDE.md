@@ -19,6 +19,10 @@ Read `README.md` for the feature map and `DEPLOYMENT.md` for Hostinger.
 - **Never cache Eloquent models.** Laravel restricts which classes can be
   unserialized from the cache, so caching models throws
   `__PHP_Incomplete_Class` errors. Cache arrays and scalars only.
+- **Visitor tracking runs after the response.** `TrackVisitors` does its work in
+  `terminate()`, never in `handle()`, and `VisitorTracker::track()` swallows its
+  own errors — analytics must never slow down or break a page. External lookups
+  belong in `epic:resolve-visitor-locations`, never in a request.
 - **Do not name a model method after one of its columns** (for example
   `ListItem::group()` clashed with the `group` column and broke attribute
   access). Use `inGroup()`, `scopeX()` or similar.
@@ -45,4 +49,13 @@ Field types available to `fields()`: `text`, `textarea`, `richtext`, `select`,
   `App\Models\Setting::put()` and defined in
   `App\Http\Controllers\Admin\SettingController::schema()`.
 - Run `php artisan test` before committing; the suite covers every public route,
-  every dashboard screen, CRUD with uploads, form submissions and permissions.
+  every dashboard screen, CRUD with uploads, form submissions, permissions,
+  visitor tracking and the analytics reports.
+- Analytics figures all come from `App\Services\VisitorReport` scoped by an
+  `App\Support\ReportRange`; chart geometry comes from `App\Support\Chart`. Add a
+  new report by extending those rather than querying `visits` from a view.
+- Charts follow the house spec: 2px lines, a 10% area wash, hairline gridlines,
+  rounded whole-number axis labels, a legend for two or more series, and the
+  brand blue `#0f6fc0` / green `#41a62a` pair (validated for colour-blind
+  separation). Never add a second y-axis.
+- Factories are deterministic; vary data in the test, not the factory.
