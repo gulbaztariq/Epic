@@ -22,7 +22,16 @@ class PublicationController extends Controller
         return view('site.publications.index', [
             'page' => Page::findBySlug('publications'),
             'publications' => $publications,
-            'types' => Publication::published()->collection('collection')->distinct()->pluck('type')->filter()->values(),
+            // Built without the ordering scope: "SELECT DISTINCT type ... ORDER BY
+            // published_at" is rejected by MySQL's ONLY_FULL_GROUP_BY mode.
+            'types' => Publication::query()
+                ->where('is_published', true)
+                ->where('collection', 'collection')
+                ->whereNotNull('type')
+                ->distinct()
+                ->orderBy('type')
+                ->pluck('type')
+                ->values(),
             'activeType' => $type,
             'collectionTypes' => ListItem::inGroup('publication_types'),
         ]);

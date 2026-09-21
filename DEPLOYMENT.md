@@ -4,9 +4,13 @@ This guide covers a standard Hostinger shared-hosting account (hPanel). The
 whole site is plain PHP — there is **no Node.js build step**, so you only need
 to upload files, create a database and run one command.
 
-**Requirements:** PHP **8.3 or newer**, MySQL, and the PHP extensions Hostinger
-enables by default (`pdo_mysql`, `mbstring`, `openssl`, `fileinfo`, `gd`, `zip`,
-`xml`, `ctype`, `tokenizer`, `curl`).
+**Requirements:** PHP **8.3 or newer**, MySQL/MariaDB, and the PHP extensions
+Hostinger enables by default (`pdo_mysql`, `mbstring`, `openssl`, `fileinfo`,
+`gd`, `zip`, `xml`, `ctype`, `tokenizer`, `curl`).
+
+The application has been tested end to end against MariaDB 10.11 with MySQL 8's
+strict `sql_mode` (`ONLY_FULL_GROUP_BY`), in production mode with cached
+configuration, routes and views.
 
 ---
 
@@ -38,12 +42,27 @@ enables by default (`pdo_mysql`, `mbstring`, `openssl`, `fileinfo`, `gd`, `zip`,
    it to `domains/your-domain.com/epic/public`.
 3. You can delete the root `.htaccess` in this setup.
 
+### Option C — deploy from GitHub (hPanel → GIT)
+
+1. hPanel → **Websites → your domain → Advanced → GIT**.
+2. Copy the SSH key hPanel shows you, then add it to the repository on GitHub
+   (**Settings → Deploy keys → Add deploy key**, read access is enough).
+3. Repository: `git@github.com:gulbaztariq/Epic.git`, branch: the one you want
+   to publish. Leave the install path empty to deploy into `public_html`.
+4. Press **Create**, then **Deploy**. Use the same **Deploy** button to publish
+   later changes.
+
+This path still needs `vendor/` — see below — so it suits accounts that have
+SSH. Combine it with Option A's `.htaccess` (the repository includes one).
+
 ### Dependencies (`vendor/`)
 
 - **With SSH** (Premium/Business plans): run
   `composer install --no-dev --optimize-autoloader` in the project folder.
-- **Without SSH:** run that command on your own computer first and upload the
-  generated `vendor/` folder with the rest of the files. It is not in git.
+- **Without SSH:** use the ready-made bundle (`epic-website-with-dependencies.zip`),
+  which already contains `vendor/`. Upload it to `public_html`, extract, and skip
+  straight to step 3. Alternatively run the command above on your own computer and
+  upload the generated `vendor/` folder — it is deliberately not in git.
 
 ## 3. Create the `.env` file
 

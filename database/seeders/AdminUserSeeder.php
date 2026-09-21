@@ -9,11 +9,13 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        // Read through config rather than env() so the values are still
+        // available when the configuration has been cached for production.
         User::updateOrCreate(
-            ['email' => env('EPIC_ADMIN_EMAIL', 'admin@epic.org.pk')],
+            ['email' => config('epic.admin.email')],
             [
-                'name' => env('EPIC_ADMIN_NAME', 'EPIC Super Admin'),
-                'password' => env('EPIC_ADMIN_PASSWORD', 'EpicAdmin@2025'),
+                'name' => config('epic.admin.name'),
+                'password' => config('epic.admin.password'),
                 'role' => 'super_admin',
                 'designation' => 'Super Administrator',
                 'is_active' => true,
