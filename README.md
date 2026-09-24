@@ -39,7 +39,8 @@ Run the test suite with `php artisan test`.
 
 ## Deploying
 
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step Hostinger instructions.
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step Hostinger instructions,
+or **[RAILWAY.md](RAILWAY.md)** to deploy the container image to Railway.
 
 Neither SSH nor cron is required:
 

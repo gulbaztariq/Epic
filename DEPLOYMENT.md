@@ -8,6 +8,9 @@ to upload files, create a database and run one command.
 Hostinger enables by default (`pdo_mysql`, `mbstring`, `openssl`, `fileinfo`,
 `gd`, `zip`, `xml`, `ctype`, `tokenizer`, `curl`).
 
+Deploying to Railway instead? The container image and its settings are covered
+in **[RAILWAY.md](RAILWAY.md)**.
+
 The application has been tested end to end against MariaDB 10.11 with MySQL 8's
 strict `sql_mode` (`ONLY_FULL_GROUP_BY`), in production mode with cached
 configuration, routes and views.
