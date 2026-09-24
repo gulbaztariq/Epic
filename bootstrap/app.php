@@ -15,6 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Platforms such as Railway terminate TLS at their edge and forward the
+        // request on. Without trusting that proxy, every visitor would be
+        // recorded as the load balancer and generated URLs would use http.
+        $middleware->trustProxies(at: '*');
+
         $middleware->web(append: [
             TrackVisitors::class,
             RunDueScheduledTasks::class,

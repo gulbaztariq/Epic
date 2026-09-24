@@ -147,6 +147,28 @@ class VisitorTrackingTest extends TestCase
         $this->assertSame('203.0.113.0', Visit::sole()->ip_address);
     }
 
+    public function test_the_real_visitor_ip_is_recorded_behind_a_proxy(): void
+    {
+        // What Railway (or any edge proxy) sends: the load balancer as the
+        // socket address, the actual visitor in X-Forwarded-For.
+        $this->withServerVariables(['REMOTE_ADDR' => '10.11.12.13'])
+            ->browse('/', self::DESKTOP, ['X-Forwarded-For' => '203.0.113.42']);
+
+        $this->assertSame('203.0.113.0', Visit::sole()->ip_address,
+            'The forwarded visitor address must be used, not the proxy address.');
+    }
+
+    public function test_https_urls_are_generated_behind_a_proxy(): void
+    {
+        $response = $this->withHeaders([
+            'User-Agent' => self::DESKTOP,
+            'X-Forwarded-Proto' => 'https',
+            'X-Forwarded-Host' => 'epic.example.com',
+        ])->get('/');
+
+        $response->assertOk()->assertSee('https://epic.example.com', false);
+    }
+
     public function test_full_ip_addresses_are_stored_only_when_asked_for(): void
     {
         Setting::put('analytics_store_full_ip', '1');
