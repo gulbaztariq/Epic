@@ -34,12 +34,20 @@ RUN { \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Exactly one MPM must be loaded or Apache refuses to start ("More than one MPM
-# loaded"). Installing packages above can leave Debian's mpm_event enabled
-# alongside the mpm_prefork this image ships with, so pick one explicitly.
-# mod_php is not thread-safe, so prefork is the one to keep.
-RUN { a2dismod -f mpm_event mpm_worker || true; } \
-    && a2enmod mpm_prefork rewrite headers expires deflate
+# Exactly one MPM may be loaded or Apache refuses to start ("More than one MPM
+# loaded"). a2dismod only manages the symlinks in mods-enabled, so clear those
+# outright and put back the single MPM this image needs: mod_php is not
+# thread-safe, so prefork. The listing that follows records, in the build log,
+# every place the served config pulls an MPM in from.
+RUN rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf \
+    && a2enmod mpm_prefork rewrite headers expires deflate \
+    && echo '--- Include directives in apache2.conf ---' \
+    && grep -nE '^[[:space:]]*Include' /etc/apache2/apache2.conf \
+    && echo '--- MPM LoadModule lines the served config reads ---' \
+    && { grep -RnE '^[[:space:]]*LoadModule[[:space:]]+mpm_' \
+            /etc/apache2/apache2.conf /etc/apache2/ports.conf \
+            /etc/apache2/mods-enabled /etc/apache2/conf-enabled \
+            /etc/apache2/sites-enabled || echo '(none)'; }
 
 WORKDIR /var/www/html
 
