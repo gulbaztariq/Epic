@@ -34,7 +34,12 @@ RUN { \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-RUN a2enmod rewrite headers expires deflate
+# Exactly one MPM must be loaded or Apache refuses to start ("More than one MPM
+# loaded"). Installing packages above can leave Debian's mpm_event enabled
+# alongside the mpm_prefork this image ships with, so pick one explicitly.
+# mod_php is not thread-safe, so prefork is the one to keep.
+RUN { a2dismod -f mpm_event mpm_worker || true; } \
+    && a2enmod mpm_prefork rewrite headers expires deflate
 
 WORKDIR /var/www/html
 
@@ -53,6 +58,9 @@ RUN composer dump-autoload --optimize --no-dev --no-interaction \
     && chmod -R 775 storage bootstrap/cache public/uploads
 
 COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
+# Fail the build, not the container, if the Apache config is unservable.
+RUN apache2ctl -t
 COPY docker/entrypoint.sh /usr/local/bin/epic-entrypoint
 RUN chmod +x /usr/local/bin/epic-entrypoint
 
