@@ -34,20 +34,15 @@ RUN { \
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Exactly one MPM may be loaded or Apache refuses to start ("More than one MPM
-# loaded"). a2dismod only manages the symlinks in mods-enabled, so clear those
-# outright and put back the single MPM this image needs: mod_php is not
-# thread-safe, so prefork. The listing that follows records, in the build log,
-# every place the served config pulls an MPM in from.
+# Apache loads exactly one MPM or refuses to start. mod_php is not thread-safe,
+# so it has to be prefork. The entrypoint enforces this again at start-up,
+# because a deleted file here does not reliably stay deleted in the running
+# container; the listing below records what this image ships.
 RUN rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf \
     && a2enmod mpm_prefork rewrite headers expires deflate \
-    && echo '--- Include directives in apache2.conf ---' \
-    && grep -nE '^[[:space:]]*Include' /etc/apache2/apache2.conf \
-    && echo '--- MPM LoadModule lines the served config reads ---' \
-    && { grep -RnE '^[[:space:]]*LoadModule[[:space:]]+mpm_' \
-            /etc/apache2/apache2.conf /etc/apache2/ports.conf \
-            /etc/apache2/mods-enabled /etc/apache2/conf-enabled \
-            /etc/apache2/sites-enabled || echo '(none)'; }
+    && echo 'MPM modules this image enables:' \
+    && { grep -RlE '^[[:space:]]*LoadModule[[:space:]]+mpm_' \
+            /etc/apache2/mods-enabled || echo '(none)'; }
 
 WORKDIR /var/www/html
 
@@ -67,7 +62,9 @@ RUN composer dump-autoload --optimize --no-dev --no-interaction \
 
 COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# Fail the build, not the container, if the Apache config is unservable.
+# Catch a malformed vhost at build time rather than in a crash loop. This is a
+# syntax check only: it does not run the start-up checks, so it will not notice
+# a second MPM.
 RUN apache2ctl -t
 COPY docker/entrypoint.sh /usr/local/bin/epic-entrypoint
 RUN chmod +x /usr/local/bin/epic-entrypoint

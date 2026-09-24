@@ -31,12 +31,18 @@ done
 chown -R www-data:www-data /var/www/html/public/uploads /var/www/html/storage \
                            /var/www/html/bootstrap/cache || true
 
-# Apache refuses to start when two MPMs are loaded, and the message alone does
-# not say where the second one came from. Record what the served config pulls
-# in, so a container that will not boot is diagnosable from the platform logs.
-grep -RhE '^[[:space:]]*LoadModule[[:space:]]+mpm_' /etc/apache2/apache2.conf \
-     /etc/apache2/mods-enabled /etc/apache2/conf-enabled 2>/dev/null \
-  | sed 's/^/EPIC: MPM /' >&2 || true
+# Apache loads exactly one MPM or refuses to start ("More than one MPM loaded",
+# which names no file). The image enables prefork alone, because mod_php is not
+# thread-safe, but a module the image deleted can reappear in the container the
+# host actually runs, so settle it here against the filesystem Apache will read.
+for module in /etc/apache2/mods-enabled/mpm_*.load; do
+    case "${module}" in
+        */mpm_prefork.load) continue ;;
+        *'*.load') continue ;;   # nothing matched the glob
+    esac
+    echo "EPIC: disabling a second MPM: ${module##*/}" >&2
+    rm -f "${module}" "${module%.load}.conf"
+done
 
 echo "EPIC: starting Apache on port ${PORT}"
 exec apache2-foreground
