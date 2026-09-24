@@ -31,6 +31,11 @@ Read `README.md` for the feature map and `DEPLOYMENT.md` for Hostinger.
 - **Do not name a model method after one of its columns** (for example
   `ListItem::group()` clashed with the `group` column and broke attribute
   access). Use `inGroup()`, `scopeX()` or similar.
+- **Leave `config.platform.php` in `composer.json` alone.** It pins dependency
+  resolution to 8.3.0 so `composer.lock` stays installable on the PHP version
+  the docs promise. Without it Composer resolved Symfony 8.1 (which needs PHP
+  8.4.1) on a newer local PHP, and `composer install` then failed on every 8.3
+  host.
 
 ## Adding a managed content type
 
