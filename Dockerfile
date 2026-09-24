@@ -30,6 +30,7 @@ RUN { \
         echo 'post_max_size=32M'; \
         echo 'memory_limit=512M'; \
         echo 'expose_php=Off'; \
+        echo 'short_open_tag=Off'; \
     } > /usr/local/etc/php/conf.d/epic.ini
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

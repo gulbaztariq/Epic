@@ -31,6 +31,13 @@ Read `README.md` for the feature map and `DEPLOYMENT.md` for Hostinger.
 - **Do not name a model method after one of its columns** (for example
   `ListItem::group()` clashed with the `group` column and broke attribute
   access). Use `inGroup()`, `scopeX()` or similar.
+- **Never write `<?` in a Blade file.** Blade tokenises templates with
+  `token_get_all()`, so on a host with `short_open_tag` on (PHP's compiled-in
+  default, which the official PHP container images do not override) a literal
+  `<?xml` is read as a PHP open tag and the view stops compiling — the sitemap
+  returned a 500 in production for exactly this reason while the tests passed.
+  Build such output in PHP, where a quoted string is safe, and pass it to the
+  response.
 - **Leave `config.platform.php` in `composer.json` alone.** It pins dependency
   resolution to 8.3.0 so `composer.lock` stays installable on the PHP version
   the docs promise. Without it Composer resolved Symfony 8.1 (which needs PHP

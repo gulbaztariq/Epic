@@ -65,6 +65,22 @@ class PublicSiteTest extends TestCase
         $this->get($uri)->assertOk();
     }
 
+    public function test_sitemap_is_served_as_xml(): void
+    {
+        $response = $this->get('/sitemap.xml')->assertOk();
+
+        $response->assertHeader('Content-Type', 'application/xml');
+
+        // A 200 alone is not enough: the declaration went missing once because
+        // PHP read it as an open tag, which leaves an unusable sitemap.
+        $this->assertStringStartsWith('<?xml version="1.0" encoding="UTF-8"?>', $response->getContent());
+        $this->assertStringContainsString('<loc>'.route('home').'</loc>', $response->getContent());
+        $this->assertNotNull(
+            simplexml_load_string($response->getContent()),
+            'The sitemap is not well-formed XML.'
+        );
+    }
+
     public function test_home_page_shows_seeded_content(): void
     {
         $this->get('/')

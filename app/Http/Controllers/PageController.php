@@ -69,8 +69,13 @@ class PageController extends Controller
             $urls->push(['loc' => route('work.projects.show', $item->slug), 'lastmod' => $item->updated_at, 'priority' => '0.5']);
         }
 
-        return response()
-            ->view('site.sitemap', ['urls' => $urls])
-            ->header('Content-Type', 'application/xml');
+        // The XML declaration is prepended here rather than written at the top of
+        // the Blade file. Blade tokenises templates with token_get_all(), so where
+        // short_open_tag is on it reads "<?xml" as a PHP open tag and stops
+        // compiling the rest of the view. Inside PHP a quoted string is safe.
+        $body = '<?xml version="1.0" encoding="UTF-8"?>'."\n"
+            .view('site.sitemap', ['urls' => $urls])->render();
+
+        return response($body)->header('Content-Type', 'application/xml');
     }
 }
