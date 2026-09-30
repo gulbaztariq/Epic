@@ -190,6 +190,8 @@ class MaintenanceTest extends TestCase
 
     public function test_the_installer_secret_is_unset_by_default(): void
     {
-        $this->assertNull(config('epic.install_token'), 'public/install.php must stay locked unless a secret is set.');
+        // Unset and empty both leave install.php locked (it compares against ''), and
+        // .env.example ships the key blank, so CI sees '' where a bare checkout sees null.
+        $this->assertTrue(blank(config('epic.install_token')), 'public/install.php must stay locked unless a secret is set.');
     }
 }
