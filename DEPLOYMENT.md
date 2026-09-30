@@ -204,6 +204,28 @@ In File Manager: right-click each folder → **Permissions** → `775`, tick
 
 ## Updating the site later
 
+### With SSH: one script
+
+If your plan has SSH (Hostinger: hPanel > Advanced > SSH Access, port 65002), this
+publishes an update in two commands and needs no uploading. Connect, fetch the
+script, and run it once to look and once to publish:
+
+```bash
+ssh -p 65002 YOUR_USER@YOUR_SERVER_IP          # type the password at the prompt
+curl -fsSL https://raw.githubusercontent.com/gulbaztariq/Epic/claude/epic-ritchie-o47wjd/scripts/deploy-hostinger.sh -o deploy-epic.sh
+bash deploy-epic.sh                            # only looks: changes nothing
+DEPLOY=yes bash deploy-epic.sh                 # publishes
+```
+
+The first run finds the site, checks PHP 8.3+, Composer and the database connection,
+downloads the release and lists the database updates it brings. The second run backs
+up the code and the database (in `~/epic-backups/`, readable only by you), copies the
+files without deleting anything, installs dependencies, applies the database updates,
+rebuilds the caches and checks the live site. It never touches `.env`, `storage/` or
+`public/uploads/`, refuses any folder that is not an EPIC install, and stops at the
+first problem. If it finds several sites, or none, pass `SITE=/full/path`. It updates
+an installed site; a first install still needs the `.env` steps below.
+
 ### Without SSH (the usual case on shared hosting)
 
 1. In hPanel → **File Manager**, upload the new bundle's contents over the site
