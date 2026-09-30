@@ -250,7 +250,7 @@ statistics live in the database, so the database export covers them too.
 | Symptom | Fix |
 | --- | --- |
 | 500 error on every page | Check `storage/logs/laravel.log`. Usually a missing `APP_KEY`, wrong database credentials, or `storage/` not writable. |
-| "No application encryption key" | Run `php artisan key:generate --force`. |
+| "No application encryption key" | With SSH: `php artisan key:generate --force`. Without SSH: on your own computer run `echo "base64:$(openssl rand -base64 32)"` (Mac and Linux), paste the result after `APP_KEY=` in `.env`, then delete `bootstrap/cache/config.php` in File Manager so the old cached value is dropped. (Installers from before this was fixed could cache an empty key; the current one never does.) |
 | Blank page / "Whoops" after an update | `php artisan optimize:clear` |
 | Styles missing, site looks unstyled | The domain is pointing at the project root instead of `public/`. Confirm the root `.htaccess` was uploaded, or use Option B above. |
 | Images upload but do not show | `public/uploads` is not writable (set `775`), or `APP_URL` does not match the real domain. |

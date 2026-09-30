@@ -24,7 +24,9 @@ class InstallCommand extends Command
 
         // 1. Application key
         if (blank(config('app.key'))) {
-            $this->components->task('Generating application key', fn () => Artisan::call('key:generate', ['--force' => true]) === 0);
+            $this->components->task('Generating application key', function () {
+                return Artisan::call('key:generate', ['--force' => true]) === 0 && $this->adoptGeneratedKey();
+            });
         } else {
             $this->components->twoColumnDetail('Application key', '<fg=green>already set</>');
         }
@@ -65,6 +67,7 @@ class InstallCommand extends Command
         // 5. Production caches
         if ($this->option('optimize')) {
             $this->components->task('Caching configuration, routes and views', fn () => Artisan::call('optimize') === 0);
+            $this->refuseCacheWithoutKey();
         } else {
             Artisan::call('optimize:clear');
         }
@@ -82,5 +85,61 @@ class InstallCommand extends Command
         }
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Hand a freshly generated key to this running process.
+     *
+     * key:generate writes the key to .env, but this process loaded .env before the key
+     * existed, and Laravel's environment loader never overwrites a variable that is already
+     * defined, even as an empty string. Everything built later in the same process, above
+     * all the configuration cache, would still see an empty APP_KEY and freeze it in: the
+     * installer reported success and then every page failed with "No application
+     * encryption key has been specified".
+     */
+    public static function exportKey(string $key): void
+    {
+        putenv('APP_KEY='.$key);
+        $_ENV['APP_KEY'] = $key;
+        $_SERVER['APP_KEY'] = $key;
+
+        config(['app.key' => $key]);
+    }
+
+    protected function adoptGeneratedKey(): bool
+    {
+        $file = $this->laravel->environmentFilePath();
+
+        if (! is_file($file) || ! preg_match('/^APP_KEY=(.+)$/m', (string) file_get_contents($file), $found)) {
+            return false;
+        }
+
+        static::exportKey(trim($found[1], " \t\"'"));
+
+        return true;
+    }
+
+    /**
+     * Never leave behind a cached configuration that has no key: it would make every page
+     * fail, and on hosting without SSH there is no way to notice or repair it from a
+     * browser. Without the cache the site reads .env directly, which works.
+     */
+    protected function refuseCacheWithoutKey(): void
+    {
+        $cache = $this->laravel->getCachedConfigPath();
+
+        if (! is_file($cache)) {
+            return;
+        }
+
+        $cached = require $cache;
+
+        if (filled($cached['app']['key'] ?? null)) {
+            return;
+        }
+
+        Artisan::call('optimize:clear');
+        $this->components->warn('The application key was missing from the cached configuration, so the caches were removed. '
+            .'The site will read .env directly; check that APP_KEY is set there.');
     }
 }
