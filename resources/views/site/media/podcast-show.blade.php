@@ -20,7 +20,9 @@
                     @elseif ($episode->audio_url)
                         <audio controls style="width:100%" src="{{ uploaded_url($episode->audio_url) }}">Your browser does not support audio playback.</audio>
                     @else
-                        <img src="{{ epic_image($episode->cover_image, 'wide') }}" alt="{{ $episode->title }}" style="border-radius:var(--radius-lg);width:100%">
+                        <div class="detail-picture {{ pic_adjusted($episode->cover_image) ? 'is-framed' : '' }}" style="margin-bottom:0">
+                            <img src="{{ epic_image($episode->cover_image, 'wide') }}" alt="{{ $episode->title }}"{!! pic_style($episode->cover_image) !!}>
+                        </div>
                     @endif
 
                     <div class="meta-row mt-4">

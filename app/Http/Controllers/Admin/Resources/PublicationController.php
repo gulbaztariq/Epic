@@ -69,7 +69,7 @@ class PublicationController extends ResourceController
             self::field('body', 'Full text', 'richtext', ['col' => 12]),
 
             self::section('Files'),
-            self::field('cover_image', 'Cover image', 'image', ['col' => 6, 'hint' => 'Portrait works best (3:4).']),
+            self::field('cover_image', 'Cover image', 'image', ['col' => 6, 'aspect' => '3 / 4', 'hint' => 'Portrait works best (3:4).']),
             self::field('file_path', 'PDF file', 'file', ['col' => 6, 'accept' => '.pdf,.doc,.docx', 'rules' => 'nullable|file|mimes:pdf,doc,docx|max:20480']),
             self::field('external_url', 'External link', 'text', ['col' => 12, 'hint' => 'Used when no PDF is uploaded.']),
 

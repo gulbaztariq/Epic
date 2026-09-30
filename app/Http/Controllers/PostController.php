@@ -15,7 +15,7 @@ class PostController extends Controller
             : null;
 
         return view('site.posts.index', [
-            'page' => Page::findBySlug('blogs'),
+            'page' => Page::builtIn('blogs'),
             'posts' => Post::published()
                 ->category($category ? [$category] : ['blog', 'article'])
                 ->paginate(9)

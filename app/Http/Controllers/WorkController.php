@@ -12,7 +12,7 @@ class WorkController extends Controller
     public function themes()
     {
         return view('site.work.themes', [
-            'page' => Page::findBySlug('themes'),
+            'page' => Page::builtIn('themes'),
             'themes' => ListItem::inGroup('themes'),
         ]);
     }
@@ -20,7 +20,7 @@ class WorkController extends Controller
     public function projects()
     {
         return view('site.work.projects', [
-            'page' => Page::findBySlug('projects'),
+            'page' => Page::builtIn('projects'),
             'projects' => Project::published()->paginate(9),
             'projectTypes' => ListItem::inGroup('project_types'),
         ]);
@@ -39,7 +39,7 @@ class WorkController extends Controller
     public function chapters()
     {
         return view('site.work.chapters', [
-            'page' => Page::findBySlug('international-chapters'),
+            'page' => Page::builtIn('international-chapters'),
             'chapters' => Chapter::active()->get(),
         ]);
     }

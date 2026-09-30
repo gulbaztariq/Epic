@@ -17,7 +17,7 @@
                     @foreach ($issues as $issue)
                         <article class="card">
                             <a class="card-media is-wide" href="{{ route('publications.show', $issue->slug) }}">
-                                <img src="{{ epic_image($issue->cover_image, 'card') }}" alt="{{ $issue->title }}" loading="lazy">
+                                <img src="{{ epic_image($issue->cover_image, 'card') }}" alt="{{ $issue->title }}" loading="lazy"{!! pic_style($issue->cover_image) !!}>
                             </a>
                             <div class="card-body">
                                 <h3><a href="{{ route('publications.show', $issue->slug) }}">{{ $issue->title }}</a></h3>

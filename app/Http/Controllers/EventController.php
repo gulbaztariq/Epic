@@ -18,7 +18,7 @@ class EventController extends Controller
             : Event::upcoming()->paginate(9)->withQueryString();
 
         return view('site.events.index', [
-            'page' => Page::findBySlug('events'),
+            'page' => Page::builtIn('events'),
             'events' => $events,
             'filter' => $filter === 'past' ? 'past' : 'upcoming',
             'eventTypes' => ListItem::inGroup('event_types'),

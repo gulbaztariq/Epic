@@ -15,10 +15,9 @@ class ListItem extends Model
      * The content groups offered in the admin UI.
      */
     public const GROUPS = [
-        'hero_highlights' => 'Home — Hero highlights',
         'principles' => 'Who We Are — EPIC Principles',
         'strengths' => 'Who We Are — Our Strengths',
-        'board_areas' => 'Who We Are — Board of Governance areas',
+        'board_areas' => 'Who We Are — Board of Directors areas',
         'advisory_areas' => 'Who We Are — Advisory Council guidance',
         'themes' => 'What We Do — Themes of EPIC work',
         'project_types' => 'What We Do — Types of projects',

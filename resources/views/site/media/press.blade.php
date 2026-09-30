@@ -15,7 +15,7 @@
                     @foreach ($posts as $post)
                         <article class="list-card is-wide">
                             <div class="list-media">
-                                <img src="{{ epic_image($post->image, 'card') }}" alt="{{ $post->title }}" loading="lazy">
+                                <img src="{{ epic_image($post->image, 'card') }}" alt="{{ $post->title }}" loading="lazy"{!! pic_style($post->image) !!}>
                             </div>
                             <div class="list-body">
                                 <div class="card-meta" style="margin:0">

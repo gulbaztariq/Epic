@@ -2,7 +2,7 @@
 
 <article class="card pub-card">
     <a class="card-media" href="{{ route('publications.show', $publication->slug) }}">
-        <img src="{{ epic_image($publication->cover_image, 'portrait') }}" alt="{{ $publication->title }}" loading="lazy">
+        <img src="{{ epic_image($publication->cover_image, 'portrait') }}" alt="{{ $publication->title }}" loading="lazy"{!! pic_style($publication->cover_image) !!}>
     </a>
     <div class="card-body">
         <h3><a href="{{ route('publications.show', $publication->slug) }}">{{ $publication->title }}</a></h3>

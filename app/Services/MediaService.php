@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\MediaFile;
+use App\Support\Pictures;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -73,6 +74,9 @@ class MediaService
         }
 
         MediaFile::where('path', $relative)->delete();
+
+        // The picture's fit and crop choices go with it.
+        Pictures::forget($relative);
     }
 
     /**

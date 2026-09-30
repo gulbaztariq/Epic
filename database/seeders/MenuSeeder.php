@@ -16,7 +16,7 @@ class MenuSeeder extends Seeder
                 ['EPIC Principles', '/who-we-are/epic-principles'],
                 ['Our Strengths', '/who-we-are/our-strengths'],
                 ['EPIC Team', '/who-we-are/epic-team'],
-                ['Board of Governance', '/who-we-are/board-of-governance'],
+                ['Board of Directors', '/who-we-are/board-of-directors'],
                 ['Advisory Council', '/who-we-are/advisory-council'],
             ]],
             ['What We Do', '/what-we-do/themes', [

@@ -18,7 +18,7 @@
                         <article class="member-card">
                             <div class="member-photo">
                                 @if ($member->photo)
-                                    <img src="{{ uploaded_url($member->photo) }}" alt="{{ $member->name }}" loading="lazy">
+                                    <img src="{{ uploaded_url($member->photo) }}" alt="{{ $member->name }}" loading="lazy"{!! pic_style($member->photo) !!}>
                                 @else
                                     <div class="member-initials">{{ $member->initials }}</div>
                                 @endif

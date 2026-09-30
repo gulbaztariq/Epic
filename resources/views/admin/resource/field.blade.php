@@ -9,6 +9,7 @@
     }
     $required = isset($field['rules']) && is_string($field['rules']) && str_contains($field['rules'], 'required');
     $invalid = $errors->has($name) ? 'is-invalid' : '';
+    $readonly = \App\Http\Controllers\Admin\ResourceController::isReadonly($field, $record);
 @endphp
 
 @if ($type === 'section')
@@ -91,6 +92,15 @@
                             Remove current {{ $type }}
                         </label>
                     @endif
+
+                    @if ($type === 'image' && ($field['adjust'] ?? true))
+                        @include('admin.resource.picture-adjust', [
+                            'name' => $name,
+                            'path' => $record->{$name} ?? null,
+                            'aspect' => $field['aspect'] ?? '4 / 3',
+                            'auto' => $field['auto'] ?? 'contain',
+                        ])
+                    @endif
                 </div>
                 @break
 
@@ -123,10 +133,11 @@
                 @break
 
             @default
-                <input class="control {{ $invalid }}" id="f-{{ $name }}" type="text" name="{{ $name }}" value="{{ $value }}"
+                <input class="control {{ $invalid }}" id="f-{{ $name }}" type="text" name="{{ $name }}" value="{{ $readonly ? ($record->{$name} ?? $value) : $value }}"
                        placeholder="{{ $field['placeholder'] ?? '' }}"
-                       @if ($name === 'title' || $name === 'name') data-slug-source @endif
-                       @if ($name === 'slug') data-slug-target @endif>
+                       @readonly($readonly)
+                       @if (! $readonly && ($name === 'title' || $name === 'name')) data-slug-source @endif
+                       @if (! $readonly && $name === 'slug') data-slug-target @endif>
         @endswitch
 
         @if (! empty($field['hint']))

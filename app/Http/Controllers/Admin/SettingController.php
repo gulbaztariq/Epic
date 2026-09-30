@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Services\MediaService;
+use App\Support\Theme;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -31,6 +32,23 @@ class SettingController extends Controller
                     'favicon' => ['label' => 'Favicon', 'type' => 'image', 'col' => 4, 'hint' => 'Square PNG, 512×512px recommended.'],
                     'header_cta_label' => ['label' => 'Header button label', 'type' => 'text', 'col' => 6, 'placeholder' => 'Support Our Work'],
                     'header_cta_url' => ['label' => 'Header button link', 'type' => 'text', 'col' => 6, 'placeholder' => '/contact'],
+                ],
+            ],
+            'appearance' => [
+                'label' => 'Appearance',
+                'icon' => 'layers',
+                'fields' => [
+                    'menu_background' => [
+                        'label' => 'Menu bar background', 'type' => 'color', 'col' => 6,
+                        'default' => Theme::DEFAULT_MENU_BACKGROUND,
+                        'hint' => 'The colour behind the logo and main menu. Keep it light so the dark menu text stays readable.',
+                    ],
+                    'page_header_overlay' => [
+                        'label' => 'Page header picture — darkening', 'type' => 'range', 'col' => 6,
+                        'min' => 0, 'max' => Theme::MAX_HEADER_OVERLAY, 'step' => 5, 'unit' => '%',
+                        'default' => (string) Theme::DEFAULT_HEADER_OVERLAY,
+                        'hint' => 'How much of a navy wash sits over the picture at the top of each page. Lower shows more of the picture; the heading stays readable on the darker left side.',
+                    ],
                 ],
             ],
             'home' => [
@@ -129,6 +147,8 @@ class SettingController extends Controller
                 $key => match ($meta['type']) {
                     'image' => ['nullable', 'image', 'max:4096'],
                     'select' => ['required', Rule::in(array_keys($meta['options']))],
+                    'color' => ['required', 'regex:/^#[0-9a-fA-F]{6}$/'],
+                    'range' => ['required', 'integer', 'between:'.($meta['min'] ?? 0).','.($meta['max'] ?? 100)],
                     default => ['nullable', 'string', 'max:5000'],
                 },
             ])

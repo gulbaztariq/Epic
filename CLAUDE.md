@@ -38,6 +38,22 @@ Read `README.md` for the feature map and `DEPLOYMENT.md` for Hostinger.
   returned a 500 in production for exactly this reason while the tests passed.
   Build such output in PHP, where a quoted string is safe, and pass it to the
   response.
+- **Look built-in pages up with `Page::builtIn('key')`, never by slug.** Every page the
+  site depends on has a stable `pages.key`; the slug is only its web address and the
+  title only its wording, both freely editable. Looking pages up by slug meant renaming
+  "Board of Governance" in the dashboard silently orphaned it. Built-in pages have a
+  read-only slug in the dashboard. Give a new built-in page a `key` in `PageSeeder`.
+- **Every uploaded picture in a frame gets `{!! pic_style($path) !!}`.** Editors choose a
+  fit, focal point and zoom per picture (`App\Support\Pictures`, table `image_settings`);
+  they reach the page as `--fit`/`--pos`/`--zoom` custom properties that one shared CSS
+  rule applies to each frame. A new frame must be added to that rule in `site.css` and
+  clip its overflow. Image fields get the dashboard controls automatically; opt out with
+  `'adjust' => false` where there is no frame (logos, flags, avatars). Never hard-code
+  `object-fit: cover`: the automatic choice shows the whole picture.
+- **Anything an update needs from the database must degrade before it is applied.**
+  Without SSH an update is "upload files, then run the installer", so the site is
+  briefly running new code on the old schema. Reads of new columns or tables should
+  fall back (see `Page::builtIn()` and `Pictures::all()`), not throw.
 - **Leave `config.platform.php` in `composer.json` alone.** It pins dependency
   resolution to 8.3.0 so `composer.lock` stays installable on the PHP version
   the docs promise. Without it Composer resolved Symfony 8.1 (which needs PHP

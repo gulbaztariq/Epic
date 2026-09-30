@@ -59,7 +59,7 @@ Neither SSH nor cron is required:
 
 | Section | Pages |
 | --- | --- |
-| Who We Are | About Us · Vision & Mission · EPIC Principles · Our Strengths · EPIC Team · Board of Governance · Advisory Council |
+| Who We Are | About Us · Vision & Mission · EPIC Principles · Our Strengths · EPIC Team · Board of Directors · Advisory Council |
 | What We Do | Themes of EPIC Work · Projects (+ detail pages) · International Chapters |
 | Events | Upcoming and past events (+ detail pages) |
 | Partnerships & MoUs | Partnerships · MoUs · Memberships |
@@ -79,13 +79,13 @@ when a section has no content yet.
 | **Page sections** | Extra blocks on any page (text, checklists, icon cards, image + text, quote, accordion, call to action) and the home page section headings |
 | **Navigation menus** | Header dropdowns, footer columns and the footer legal links |
 | **Focus areas** | The seven-icon strip on the home page |
-| **Content lists** | Reusable lists: principles, strengths, themes, project types, event types, partnership areas, MoU scope, memberships, entrepreneurship pillars, hero highlights |
+| **Content lists** | Reusable lists: principles, strengths, themes, project types, event types, partnership areas, MoU scope, memberships, entrepreneurship pillars |
 | **Data & insights** | The statistic tiles on the home page |
 | **Publications** | Reports, briefs, papers, journal issues and newsletters, with cover image and PDF |
 | **Events** | Dates, venue, format, registration link, image |
 | **Projects** | Project pages with status, partners and timeline |
 | **Blogs & press** | Blogs, articles and press releases |
-| **Team & councils** | EPIC Team, Board of Governance and Advisory Council profiles |
+| **Team & councils** | EPIC Team, Board of Directors and Advisory Council profiles |
 | **Partners & MoUs** | Partner organisations, signed MoUs and memberships |
 | **International chapters** | Country chapters |
 | **Careers** | Vacancies, internships and fellowships |
@@ -95,7 +95,7 @@ when a section has no content yet.
 | **Visitor log** | Every recorded page view, filterable by date, country, device and page |
 | **Messages · Volunteers · Subscribers** | Form submissions, with CSV export for subscribers |
 | **Housekeeping** | For hosting without SSH: run the scheduled jobs on demand and rebuild the caches after editing `.env` (super admins and administrators) |
-| **Site settings** | Logos, favicon, site name, contact details, social links, footer text, header button, analytics snippets |
+| **Site settings** | Logos, favicon, site name, menu bar colour, page-header picture darkening, contact details, social links, footer text, header button, analytics snippets |
 | **Admin users** | Dashboard accounts and roles |
 
 Roles: **Super Admin** and **Administrator** can manage everything including
@@ -138,6 +138,12 @@ Files are written to `public/uploads/<folder>/` and served directly, so **no
 `storage:link` symlink is required** — which is what makes this work smoothly on
 shared hosting. Images wider than 2000px are resized automatically. Replacing or
 deleting a record deletes the old file.
+
+**Fit & crop.** Every picture field in the dashboard has a *Fit & crop* panel: a
+fit (whole picture, fill and crop, stretch, original size), a focal point you set by
+clicking the preview, and a zoom, with a live preview. The default shows the whole
+picture; page headers fill their width. Choices are stored per picture and applied
+wherever it appears, so a picture used twice looks the same in both places.
 
 ### Visitor analytics
 

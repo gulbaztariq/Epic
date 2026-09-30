@@ -204,6 +204,24 @@ In File Manager: right-click each folder → **Permissions** → `775`, tick
 
 ## Updating the site later
 
+### Without SSH (the usual case on shared hosting)
+
+1. In hPanel → **File Manager**, upload the new bundle's contents over the site
+   folder, **overwriting** existing files. The bundle never contains `.env` or
+   `public/uploads`, so your settings and uploaded pictures are not touched.
+2. Make sure `.env` still has `EPIC_INSTALL_TOKEN=some-long-secret` (add it if it
+   was removed after the first install).
+3. Open `https://your-domain.com/install.php?token=some-long-secret` and press
+   **Run it again**. This applies any database changes the update needs, adds any
+   new starter content, leaves your existing pages and settings alone, and rebuilds
+   the caches. The page deletes itself afterwards.
+
+Until step 3 the site keeps serving normally, but new features that need a database
+change are not available yet. Skipping step 3 is the usual reason a new page shows
+old wording or a new dashboard option is missing.
+
+### With SSH
+
 After uploading changed files, clear the caches:
 
 ```bash

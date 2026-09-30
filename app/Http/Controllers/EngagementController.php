@@ -18,7 +18,7 @@ class EngagementController extends Controller
     public function careers()
     {
         return view('site.involved.careers', [
-            'page' => Page::findBySlug('careers'),
+            'page' => Page::builtIn('careers'),
             'careers' => Career::open()->get(),
             'closed' => Career::where('is_open', false)->orderByDesc('id')->take(6)->get(),
         ]);
@@ -35,19 +35,19 @@ class EngagementController extends Controller
     public function volunteer()
     {
         return view('site.involved.volunteer', [
-            'page' => Page::findBySlug('volunteer'),
+            'page' => Page::builtIn('volunteer'),
             'ways' => ListItem::inGroup('get_involved'),
         ]);
     }
 
     public function subscribe()
     {
-        return view('site.involved.subscribe', ['page' => Page::findBySlug('subscribe')]);
+        return view('site.involved.subscribe', ['page' => Page::builtIn('subscribe')]);
     }
 
     public function contact()
     {
-        return view('site.involved.contact', ['page' => Page::findBySlug('contact')]);
+        return view('site.involved.contact', ['page' => Page::builtIn('contact')]);
     }
 
     public function storeContact(Request $request)

@@ -14,8 +14,10 @@
     $heroImage = $image ?: $page?->hero_image;
 @endphp
 
-<section class="page-hero {{ $heroImage ? 'has-image' : '' }}"
-    @if ($heroImage) style="background-image:url('{{ uploaded_url($heroImage) }}')" @endif>
+<section class="page-hero {{ $heroImage ? 'has-image' : '' }}">
+    @if ($heroImage)
+        <img class="page-hero-media" src="{{ uploaded_url($heroImage) }}" alt="" fetchpriority="high"{!! pic_style($heroImage) !!}>
+    @endif
     <div class="container">
         @if (count($breadcrumbs))
             <ul class="breadcrumbs">

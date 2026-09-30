@@ -11,7 +11,7 @@ class PartnershipController extends Controller
     public function index()
     {
         return view('site.partnerships.index', [
-            'page' => Page::findBySlug('partnerships'),
+            'page' => Page::builtIn('partnerships'),
             'partners' => Partner::type('partnership')->get(),
             'categories' => ListItem::inGroup('partner_types'),
         ]);
@@ -20,7 +20,7 @@ class PartnershipController extends Controller
     public function mous()
     {
         return view('site.partnerships.mous', [
-            'page' => Page::findBySlug('mous'),
+            'page' => Page::builtIn('mous'),
             'partners' => Partner::type('mou')->get(),
             'scope' => ListItem::inGroup('mou_scope'),
         ]);
@@ -29,7 +29,7 @@ class PartnershipController extends Controller
     public function memberships()
     {
         return view('site.partnerships.memberships', [
-            'page' => Page::findBySlug('memberships'),
+            'page' => Page::builtIn('memberships'),
             'partners' => Partner::type('membership')->get(),
             'networks' => ListItem::inGroup('memberships'),
         ]);

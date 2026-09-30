@@ -48,6 +48,76 @@
         });
     });
 
+    /* Picture fit & crop: a live preview of the fit, focal point and zoom being chosen */
+    all('[data-pic-adjust]').forEach(function (panel) {
+        var name = panel.getAttribute('data-pic-adjust');
+        var autoFit = panel.getAttribute('data-auto-fit') || 'contain';
+        var img = panel.querySelector('[data-pic-preview]');
+        var frame = panel.querySelector('[data-pic-frame]');
+        var dot = panel.querySelector('[data-pic-dot]');
+        var fit = panel.querySelector('[data-pic-fit]');
+        var x = panel.querySelector('[data-pic-x]');
+        var y = panel.querySelector('[data-pic-y]');
+        var zoom = panel.querySelector('[data-pic-zoom]');
+        var reset = panel.querySelector('[data-pic-reset]');
+        var file = d.querySelector('input[type=file][name="' + name + '"]');
+
+        function out(key, value) {
+            var el = panel.querySelector('[data-pic-out="' + key + '"]');
+            if (el) { el.textContent = value + '%'; }
+        }
+        function apply() {
+            var origin = x.value + '% ' + y.value + '%';
+            img.style.objectFit = fit.value === 'auto' ? autoFit : fit.value;
+            img.style.objectPosition = origin;
+            img.style.transformOrigin = origin;
+            img.style.transform = 'scale(' + (zoom.value / 100) + ')';
+            dot.style.left = x.value + '%';
+            dot.style.top = y.value + '%';
+            out('x', x.value); out('y', y.value); out('zoom', zoom.value);
+        }
+
+        [fit, x, y, zoom].forEach(function (control) {
+            on(control, 'input', apply);
+            on(control, 'change', apply);
+        });
+        on(frame, 'click', function (e) {
+            var box = frame.getBoundingClientRect();
+            function pct(value) { return Math.max(0, Math.min(100, Math.round(value))); }
+            x.value = pct((e.clientX - box.left) / box.width * 100);
+            y.value = pct((e.clientY - box.top) / box.height * 100);
+            apply();
+        });
+        on(reset, 'click', function () {
+            fit.value = 'auto'; x.value = 50; y.value = 50; zoom.value = 100;
+            apply();
+        });
+        // A newly chosen file becomes the preview, and reveals the controls.
+        on(file, 'change', function () {
+            if (!file.files || !file.files[0] || !/^image\//.test(file.files[0].type)) { return; }
+            var reader = new FileReader();
+            reader.onload = function (e) { img.src = e.target.result; panel.hidden = false; };
+            reader.readAsDataURL(file.files[0]);
+        });
+        apply();
+    });
+
+    /* Colour and range settings: keep the read-out in step with the control */
+    all('[data-color-input]').forEach(function (input) {
+        var box = input.parentNode;
+        var readout = box.querySelector('[data-color-readout]');
+        var reset = box.querySelector('[data-color-reset]');
+        function show() { if (readout) { readout.textContent = input.value; } }
+        on(input, 'input', show);
+        on(reset, 'click', function () { input.value = reset.getAttribute('data-color-reset'); show(); });
+    });
+    all('[data-range-input]').forEach(function (input) {
+        var readout = input.parentNode.querySelector('[data-range-readout]');
+        on(input, 'input', function () {
+            if (readout) { readout.textContent = input.value + (readout.getAttribute('data-unit') || ''); }
+        });
+    });
+
     /* Auto slug from title (only while the slug field is untouched) */
     var titleInput = d.querySelector('[data-slug-source]');
     var slugInput = d.querySelector('[data-slug-target]');

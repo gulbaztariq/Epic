@@ -18,8 +18,9 @@
         <div class="container">
             <div class="content-layout">
                 <div>
-                    <img src="{{ epic_image($post->image, 'wide') }}" alt="{{ $post->title }}"
-                         style="border-radius:var(--radius-lg);width:100%;margin-bottom:26px">
+                    <div class="detail-picture {{ pic_adjusted($post->image) ? 'is-framed' : '' }}">
+                        <img src="{{ epic_image($post->image, 'wide') }}" alt="{{ $post->title }}"{!! pic_style($post->image) !!}>
+                    </div>
 
                     <div class="meta-row">
                         @if ($post->published_at)<span>{!! icon('calendar') !!}{{ $post->published_at->format('d F Y') }}</span>@endif

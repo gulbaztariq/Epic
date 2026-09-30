@@ -15,7 +15,7 @@ class TeamMemberController extends ResourceController
 
     protected string $singular = 'Member';
 
-    protected string $description = 'EPIC team, Board of Governance and Advisory Council profiles.';
+    protected string $description = 'EPIC team, Board of Directors and Advisory Council profiles.';
 
     protected string $icon = 'users';
 
@@ -31,7 +31,7 @@ class TeamMemberController extends ResourceController
 
     protected function filters(): array
     {
-        return ['category' => ['label' => 'groups', 'options' => TeamMember::CATEGORIES]];
+        return ['category' => ['label' => 'groups', 'options' => TeamMember::categories()]];
     }
 
     protected function columns(): array
@@ -39,7 +39,7 @@ class TeamMemberController extends ResourceController
         return [
             ['key' => 'photo', 'label' => 'Photo', 'type' => 'image', 'round' => true],
             ['key' => 'name', 'label' => 'Name', 'type' => 'title', 'sub' => 'designation'],
-            ['key' => 'category', 'label' => 'Group', 'type' => 'badge', 'map' => TeamMember::CATEGORIES],
+            ['key' => 'category', 'label' => 'Group', 'type' => 'badge', 'map' => TeamMember::categories()],
             ['key' => 'country', 'label' => 'Country'],
             ['key' => 'sort', 'label' => 'Order'],
             ['key' => 'is_active', 'label' => 'Status', 'type' => 'boolean', 'on' => 'Visible', 'off' => 'Hidden'],
@@ -52,9 +52,9 @@ class TeamMemberController extends ResourceController
             self::section('Profile'),
             self::field('name', 'Full name', 'text', ['rules' => 'required|string|max:190', 'col' => 6]),
             self::field('designation', 'Designation', 'text', ['col' => 6]),
-            self::field('category', 'Group', 'select', ['col' => 6, 'options' => TeamMember::CATEGORIES, 'default' => 'team', 'rules' => 'required|string|max:40']),
+            self::field('category', 'Group', 'select', ['col' => 6, 'options' => TeamMember::categories(), 'default' => 'team', 'rules' => 'required|string|max:40']),
             self::field('country', 'Country', 'text', ['col' => 6]),
-            self::field('photo', 'Photograph', 'image', ['col' => 6, 'hint' => 'Square images look best.']),
+            self::field('photo', 'Photograph', 'image', ['col' => 6, 'aspect' => '1 / 1', 'hint' => 'Square images look best.']),
             self::field('short_bio', 'Short bio', 'textarea', ['col' => 6, 'rows' => 4, 'rules' => 'nullable|string|max:600']),
             self::field('bio', 'Full biography', 'richtext', ['col' => 12]),
 

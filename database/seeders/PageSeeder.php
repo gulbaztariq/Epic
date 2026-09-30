@@ -14,8 +14,9 @@ class PageSeeder extends Seeder
             $sections = $page['sections'] ?? [];
             unset($page['sections']);
 
-            $slug = $page['slug'];
-            $record = Page::firstOrNew(['slug' => $slug]);
+            $record = isset($page['key'])
+                ? (Page::where('key', $page['key'])->first() ?? Page::firstOrNew(['slug' => $page['slug']]))
+                : Page::firstOrNew(['slug' => $page['slug']]);
 
             // Only seed copy the first time so admin edits are never overwritten.
             if (! $record->exists) {
@@ -39,6 +40,7 @@ class PageSeeder extends Seeder
         return [
             [
                 'slug' => 'home',
+                'key' => 'home',
                 'title' => 'Home',
                 'eyebrow' => 'Ideas for a stronger Pakistan',
                 'hero_title' => "Evidence.\nInnovation.\nOpportunity.",
@@ -49,7 +51,7 @@ class PageSeeder extends Seeder
                 'meta_title' => 'EPIC — Economic Policy and Innovation Centre',
                 'meta_description' => 'EPIC is an independent policy, research and knowledge institution advancing evidence-based solutions for economic prosperity, human capital, governance, entrepreneurship and responsible innovation.',
                 'sections' => [
-                    ['type' => 'focus', 'heading' => 'Our Focus Areas', 'link_text' => 'A more innovative, competitive and inclusive Pakistan', 'link_url' => '/what-we-do/themes'],
+                    ['type' => 'focus', 'heading' => 'Our Focus Areas'],
                     ['type' => 'publications', 'heading' => 'Featured Publications', 'link_text' => 'View All Publications', 'link_url' => '/publications'],
                     ['type' => 'events', 'heading' => 'Upcoming Events & Dialogues', 'link_text' => 'View All Events', 'link_url' => '/events'],
                     [
@@ -66,6 +68,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'about-us',
+                'key' => 'about-us',
                 'title' => 'About Us',
                 'eyebrow' => 'Who We Are',
                 'hero_title' => 'An independent institution for evidence-based progress',
@@ -77,6 +80,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'vision-mission',
+                'key' => 'vision-mission',
                 'title' => 'Vision & Mission',
                 'eyebrow' => 'Who We Are',
                 'hero_title' => 'What we are working towards',
@@ -97,6 +101,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'epic-principles',
+                'key' => 'epic-principles',
                 'title' => 'EPIC Principles',
                 'eyebrow' => 'Who We Are',
                 'hero_title' => 'The principles that guide our work',
@@ -106,6 +111,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'our-strengths',
+                'key' => 'our-strengths',
                 'title' => 'Our Strengths',
                 'eyebrow' => 'Who We Are',
                 'hero_title' => 'One multidisciplinary platform',
@@ -115,6 +121,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'epic-team',
+                'key' => 'epic-team',
                 'title' => 'EPIC Team',
                 'eyebrow' => 'Who We Are',
                 'hero_title' => 'The people behind EPIC',
@@ -123,16 +130,18 @@ class PageSeeder extends Seeder
             ],
 
             [
-                'slug' => 'board-of-governance',
-                'title' => 'Board of Governance',
+                'slug' => 'board-of-directors',
+                'key' => 'board',
+                'title' => 'Board of Directors',
                 'eyebrow' => 'Who We Are',
                 'hero_title' => 'Strategic oversight and accountability',
-                'hero_subtitle' => "The Board of Governance provides strategic oversight, institutional guidance, and accountability for EPIC's long-term direction.",
-                'intro' => "The Board of Governance provides strategic oversight, institutional guidance, and accountability for EPIC's long-term direction. Member profiles will be announced shortly.",
+                'hero_subtitle' => "The Board of Directors provides strategic oversight, institutional guidance, and accountability for EPIC's long-term direction.",
+                'intro' => "The Board of Directors provides strategic oversight, institutional guidance, and accountability for EPIC's long-term direction. Member profiles will be announced shortly.",
             ],
 
             [
                 'slug' => 'advisory-council',
+                'key' => 'advisory-council',
                 'title' => 'Advisory Council',
                 'eyebrow' => 'Who We Are',
                 'hero_title' => 'Expertise from across disciplines',
@@ -142,6 +151,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'themes',
+                'key' => 'themes',
                 'title' => 'Themes of EPIC Work',
                 'eyebrow' => 'What We Do',
                 'hero_title' => 'Ten interconnected thematic areas',
@@ -151,6 +161,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'projects',
+                'key' => 'projects',
                 'title' => 'Projects',
                 'eyebrow' => 'What We Do',
                 'hero_title' => 'Research and delivery in practice',
@@ -160,6 +171,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'international-chapters',
+                'key' => 'international-chapters',
                 'title' => 'International Chapters',
                 'eyebrow' => 'What We Do',
                 'hero_title' => 'A growing global network',
@@ -169,6 +181,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'events',
+                'key' => 'events',
                 'title' => 'Events',
                 'eyebrow' => 'Convening',
                 'hero_title' => 'Events and dialogues',
@@ -178,6 +191,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'partnerships',
+                'key' => 'partnerships',
                 'title' => 'Partnerships',
                 'eyebrow' => 'Partnerships & MoUs',
                 'hero_title' => 'Impact built through collaboration',
@@ -187,6 +201,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'mous',
+                'key' => 'mous',
                 'title' => 'Memoranda of Understanding',
                 'eyebrow' => 'Partnerships & MoUs',
                 'hero_title' => 'Strategic MoUs',
@@ -196,6 +211,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'memberships',
+                'key' => 'memberships',
                 'title' => 'Memberships',
                 'eyebrow' => 'Partnerships & MoUs',
                 'hero_title' => 'Networks we belong to',
@@ -205,6 +221,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'publications',
+                'key' => 'publications',
                 'title' => 'Our Collection',
                 'eyebrow' => 'Publications',
                 'hero_title' => 'Research, briefs and analysis',
@@ -214,6 +231,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'journal',
+                'key' => 'journal',
                 'title' => 'Journal (HEC-recognized)',
                 'eyebrow' => 'Publications',
                 'hero_title' => 'The EPIC journal',
@@ -223,6 +241,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'newsletter',
+                'key' => 'newsletter',
                 'title' => 'E-Newsletter',
                 'eyebrow' => 'Publications',
                 'hero_title' => 'The EPIC e-newsletter',
@@ -232,6 +251,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'blogs',
+                'key' => 'blogs',
                 'title' => 'Blogs & Articles',
                 'eyebrow' => 'Publications',
                 'hero_title' => 'Commentary and analysis',
@@ -241,6 +261,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'careers',
+                'key' => 'careers',
                 'title' => 'Careers',
                 'eyebrow' => 'Get Involved',
                 'hero_title' => 'Build your career at EPIC',
@@ -250,6 +271,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'volunteer',
+                'key' => 'volunteer',
                 'title' => 'Volunteer',
                 'eyebrow' => 'Get Involved',
                 'hero_title' => 'Volunteer with EPIC',
@@ -259,6 +281,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'subscribe',
+                'key' => 'subscribe',
                 'title' => 'Subscribe',
                 'eyebrow' => 'Get Involved',
                 'hero_title' => 'Stay informed',
@@ -268,6 +291,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'contact',
+                'key' => 'contact',
                 'title' => 'Contact',
                 'eyebrow' => 'Get in touch',
                 'hero_title' => 'Contact EPIC',
@@ -276,6 +300,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'press-releases',
+                'key' => 'press-releases',
                 'title' => 'Press Releases',
                 'eyebrow' => 'Media',
                 'hero_title' => 'News from EPIC',
@@ -285,6 +310,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'podcast',
+                'key' => 'podcast',
                 'title' => 'Pod Cast',
                 'eyebrow' => 'Media',
                 'hero_title' => 'The EPIC podcast',
@@ -294,6 +320,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'youtube',
+                'key' => 'youtube',
                 'title' => 'YouTube',
                 'eyebrow' => 'Media',
                 'hero_title' => 'Watch EPIC',
@@ -303,6 +330,7 @@ class PageSeeder extends Seeder
 
             [
                 'slug' => 'gallery',
+                'key' => 'gallery',
                 'title' => 'Gallery',
                 'eyebrow' => 'Media',
                 'hero_title' => 'EPIC in pictures',

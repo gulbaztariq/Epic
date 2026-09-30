@@ -16,7 +16,7 @@
                 <div class="gallery-grid">
                     @foreach ($album->images as $image)
                         <figure class="gallery-item" data-lightbox="{{ uploaded_url($image->image) }}" style="cursor:zoom-in">
-                            <img src="{{ uploaded_url($image->image) }}" alt="{{ $image->caption ?: $album->title }}" loading="lazy">
+                            <img src="{{ uploaded_url($image->image) }}" alt="{{ $image->caption ?: $album->title }}" loading="lazy"{!! pic_style($image->image) !!}>
                             @if ($image->caption)<figcaption>{{ $image->caption }}</figcaption>@endif
                         </figure>
                     @endforeach
@@ -32,7 +32,7 @@
                         @foreach ($more as $item)
                             <article class="card">
                                 <a class="card-media is-wide" href="{{ route('media.gallery.show', $item->slug) }}">
-                                    <img src="{{ epic_image($item->cover, 'card') }}" alt="{{ $item->title }}" loading="lazy">
+                                    <img src="{{ epic_image($item->cover, 'card') }}" alt="{{ $item->title }}" loading="lazy"{!! pic_style($item->cover) !!}>
                                 </a>
                                 <div class="card-body"><h3><a href="{{ route('media.gallery.show', $item->slug) }}">{{ $item->title }}</a></h3></div>
                             </article>

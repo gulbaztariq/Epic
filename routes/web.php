@@ -38,7 +38,9 @@ Route::prefix('who-we-are')->name('about.')->group(function () {
     Route::get('epic-principles', [AboutController::class, 'principles'])->name('principles');
     Route::get('our-strengths', [AboutController::class, 'strengths'])->name('strengths');
     Route::get('epic-team', [AboutController::class, 'team'])->name('team');
-    Route::get('board-of-governance', [AboutController::class, 'board'])->name('board');
+    Route::get('board-of-directors', [AboutController::class, 'board'])->name('board');
+    // The page used to be called the Board of Governance; keep old links and bookmarks working.
+    Route::redirect('board-of-governance', '/who-we-are/board-of-directors', 301);
     Route::get('advisory-council', [AboutController::class, 'advisory'])->name('advisory');
 });
 

@@ -26,6 +26,7 @@
 
     <script>document.documentElement.classList.add('js');</script>
     <link rel="stylesheet" href="{{ asset_v('css/site.css') }}">
+    <style>:root{ {{ \App\Support\Theme::css() }} }</style>
 
     @if (setting('head_code'))
         {!! setting('head_code') !!}

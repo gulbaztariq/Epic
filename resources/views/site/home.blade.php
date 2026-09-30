@@ -42,7 +42,7 @@
                 <div class="hero-media">
                     <div class="hero-media-frame">
                         <img src="{{ $page->hero_image ? uploaded_url($page->hero_image) : asset('images/hero-islamabad.svg') }}"
-                             alt="{{ setting('site_name', 'EPIC') }}" width="1200" height="750">
+                             alt="{{ setting('site_name', 'EPIC') }}" width="1200" height="750"{!! pic_style($page->hero_image) !!}>
                     </div>
 
                     @if ($page->quote)
@@ -55,17 +55,6 @@
                     @endif
                 </div>
             </div>
-
-            @if ($highlights->isNotEmpty())
-                <div class="hero-highlights">
-                    @foreach ($highlights as $highlight)
-                        <div class="hero-highlight">
-                            {!! icon($highlight->icon ?: 'chart') !!}
-                            <span>{{ $highlight->title }}</span>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
         </div>
     </section>
 
@@ -75,10 +64,12 @@
         <section class="section focus-strip">
             <div class="container">
                 <div class="section-head">
-                    <h2 class="section-title">{{ $focusSection->heading ?: 'Our Focus Areas' }}</h2>
-                    <a class="section-link" href="{{ $focusSection->link_url ?: route('work.themes') }}">
-                        {{ $focusSection->link_text ?: 'A more innovative, competitive and inclusive Pakistan' }} {!! icon('arrow-right') !!}
-                    </a>
+                    <h2 class="section-title is-plain">{{ $focusSection->heading ?: 'Our Focus Areas' }}</h2>
+                    @if (filled($focusSection->link_text))
+                        <a class="section-link" href="{{ $focusSection->link_url ?: route('work.themes') }}">
+                            {{ $focusSection->link_text }} {!! icon('arrow-right') !!}
+                        </a>
+                    @endif
                 </div>
 
                 <div class="focus-grid reveal">
@@ -100,7 +91,7 @@
         <section class="section">
             <div class="container">
                 <div class="section-head">
-                    <h2 class="section-title">{{ $pubSection->heading ?: 'Featured Publications' }}</h2>
+                    <h2 class="section-title is-plain">{{ $pubSection->heading ?: 'Featured Publications' }}</h2>
                     <a class="section-link" href="{{ $pubSection->link_url ?: route('publications.index') }}">
                         {{ $pubSection->link_text ?: 'View All Publications' }} {!! icon('arrow-right') !!}
                     </a>
@@ -121,7 +112,7 @@
         <section class="section section-soft">
             <div class="container">
                 <div class="section-head">
-                    <h2 class="section-title">{{ $eventSection->heading ?: 'Upcoming Events & Dialogues' }}</h2>
+                    <h2 class="section-title is-plain">{{ $eventSection->heading ?: 'Upcoming Events & Dialogues' }}</h2>
                     <a class="section-link" href="{{ $eventSection->link_url ?: route('events.index') }}">
                         {{ $eventSection->link_text ?: 'View All Events' }} {!! icon('arrow-right') !!}
                     </a>
@@ -143,9 +134,8 @@
             <div class="container">
                 <div class="feature-grid">
                     <div>
-                        <h2 class="section-title" style="display:block">{!! nl2br(e($band->heading ?: 'Entrepreneurship for a Brighter Pakistan')) !!}</h2>
-                        <span style="display:block;width:46px;height:3px;background:var(--green);border-radius:2px;margin:14px 0 18px"></span>
-                        <p>{{ $band->body ?: 'We support evidence-based policies, partnerships and programmes that enable entrepreneurs, scale innovation, develop human capital and create quality jobs across Pakistan.' }}</p>
+                        <h2 class="section-title is-plain" style="display:block">{!! nl2br(e($band->heading ?: 'Entrepreneurship for a Brighter Pakistan')) !!}</h2>
+                        <p style="margin-top:14px">{{ $band->body ?: 'We support evidence-based policies, partnerships and programmes that enable entrepreneurs, scale innovation, develop human capital and create quality jobs across Pakistan.' }}</p>
                         <a class="btn btn-primary mt-3" href="{{ $band->link_url ?: route('work.themes') }}">
                             {{ $band->link_text ?: 'Our Entrepreneurship Agenda' }} {!! icon('arrow-right') !!}
                         </a>
@@ -177,7 +167,7 @@
         <section class="section">
             <div class="container">
                 <div class="section-head">
-                    <h2 class="section-title">{{ $statSection->heading ?: 'Data & Insights' }}</h2>
+                    <h2 class="section-title is-plain">{{ $statSection->heading ?: 'Data & Insights' }}</h2>
                     <a class="section-link" href="{{ $statSection->link_url ?: route('publications.index') }}">
                         {{ $statSection->link_text ?: 'Explore More Insights' }} {!! icon('arrow-right') !!}
                     </a>

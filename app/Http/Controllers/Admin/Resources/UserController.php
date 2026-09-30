@@ -69,7 +69,7 @@ class UserController extends ResourceController
             ]),
             self::field('role', 'Role', 'select', ['col' => 6, 'options' => User::ROLES, 'default' => 'admin', 'rules' => 'required|in:super_admin,admin,editor']),
             self::field('designation', 'Designation', 'text', ['col' => 6]),
-            self::field('avatar', 'Profile photo', 'image', ['col' => 6]),
+            self::field('avatar', 'Profile photo', 'image', ['col' => 6, 'adjust' => false]),
             self::field('is_active', 'Account active', 'checkbox', ['col' => 6, 'default' => true]),
         ];
     }

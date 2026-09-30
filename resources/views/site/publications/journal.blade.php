@@ -17,7 +17,7 @@
                     @foreach ($issues as $issue)
                         <article class="list-card">
                             <div class="list-media">
-                                <img src="{{ epic_image($issue->cover_image, 'portrait') }}" alt="{{ $issue->title }}" loading="lazy">
+                                <img src="{{ epic_image($issue->cover_image, 'portrait') }}" alt="{{ $issue->title }}" loading="lazy"{!! pic_style($issue->cover_image) !!}>
                             </div>
                             <div class="list-body">
                                 <div class="card-meta" style="margin:0">

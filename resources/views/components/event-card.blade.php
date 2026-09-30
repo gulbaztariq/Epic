@@ -2,7 +2,7 @@
 
 <article class="card event-card">
     <a class="event-thumb" href="{{ route('events.show', $event->slug) }}">
-        <img src="{{ epic_image($event->image, 'card') }}" alt="{{ $event->title }}" loading="lazy">
+        <img src="{{ epic_image($event->image, 'card') }}" alt="{{ $event->title }}" loading="lazy"{!! pic_style($event->image) !!}>
     </a>
     <div class="event-main">
         <div class="event-date">

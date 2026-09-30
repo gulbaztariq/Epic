@@ -2,7 +2,7 @@
 
 <article class="card">
     <a class="card-media is-wide" href="{{ $post->publicUrl() }}">
-        <img src="{{ epic_image($post->image, 'card') }}" alt="{{ $post->title }}" loading="lazy">
+        <img src="{{ epic_image($post->image, 'card') }}" alt="{{ $post->title }}" loading="lazy"{!! pic_style($post->image) !!}>
         <span class="badge badge-navy">{{ $post->category_label }}</span>
     </a>
     <div class="card-body">

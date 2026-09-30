@@ -15,8 +15,9 @@
         <div class="container">
             <div class="content-layout">
                 <div>
-                    <img src="{{ epic_image($event->image, 'wide') }}" alt="{{ $event->title }}"
-                         style="border-radius:var(--radius-lg);width:100%;margin-bottom:28px">
+                    <div class="detail-picture {{ pic_adjusted($event->image) ? 'is-framed' : '' }}">
+                        <img src="{{ epic_image($event->image, 'wide') }}" alt="{{ $event->title }}"{!! pic_style($event->image) !!}>
+                    </div>
 
                     <div class="meta-row">
                         @if ($event->starts_at)

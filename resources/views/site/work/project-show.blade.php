@@ -15,8 +15,9 @@
         <div class="container">
             <div class="content-layout">
                 <div>
-                    <img src="{{ epic_image($project->image, 'wide') }}" alt="{{ $project->title }}"
-                         style="border-radius:var(--radius-lg);width:100%;margin-bottom:28px">
+                    <div class="detail-picture {{ pic_adjusted($project->image) ? 'is-framed' : '' }}">
+                        <img src="{{ epic_image($project->image, 'wide') }}" alt="{{ $project->title }}"{!! pic_style($project->image) !!}>
+                    </div>
 
                     <div class="prose">{!! rich($project->description) !!}</div>
                 </div>

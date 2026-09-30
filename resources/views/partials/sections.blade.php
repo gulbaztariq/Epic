@@ -51,7 +51,7 @@
                 <div class="container">
                     <div class="split {{ $loop->odd ? 'is-reverse' : '' }}">
                         <div class="split-media">
-                            <img src="{{ epic_image($block->image, 'card') }}" alt="{{ $block->heading }}" loading="lazy">
+                            <img src="{{ epic_image($block->image, 'card') }}" alt="{{ $block->heading }}" loading="lazy"{!! pic_style($block->image) !!}>
                         </div>
                         <div>
                             @if ($block->heading)<h2 class="section-title">{{ $block->heading }}</h2>@endif

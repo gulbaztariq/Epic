@@ -2,6 +2,7 @@
 
 use App\Models\Setting;
 use App\Support\Icons;
+use App\Support\Pictures;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
@@ -35,6 +36,27 @@ if (! function_exists('uploaded_url')) {
         }
 
         return asset(ltrim($path, '/'));
+    }
+}
+
+if (! function_exists('pic_style')) {
+    /**
+     * The style="" attribute for an uploaded picture: the fit, focal point and zoom an
+     * editor chose for it. Empty when they chose nothing, so the frame's default
+     * applies. Pass declarations the <img> already needs as $extra so it keeps a
+     * single style attribute.
+     */
+    function pic_style(?string $path, string $extra = ''): string
+    {
+        return Pictures::style($path, $extra);
+    }
+}
+
+if (! function_exists('pic_adjusted')) {
+    /** Whether an editor has changed how this picture is fitted. */
+    function pic_adjusted(?string $path): bool
+    {
+        return Pictures::adjusted($path);
     }
 }
 

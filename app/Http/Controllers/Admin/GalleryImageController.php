@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GalleryAlbum;
 use App\Models\GalleryImage;
 use App\Services\MediaService;
+use App\Support\Pictures;
 use Illuminate\Http\Request;
 
 class GalleryImageController extends Controller
@@ -39,6 +40,10 @@ class GalleryImageController extends Controller
         ]);
 
         $image->update($data);
+
+        if (is_array($request->input('pic.image'))) {
+            Pictures::save($image->image, $request->input('pic.image'));
+        }
 
         return back()->with('success', 'Photo updated.');
     }

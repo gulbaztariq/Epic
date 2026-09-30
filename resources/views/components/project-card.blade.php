@@ -2,7 +2,7 @@
 
 <article class="card">
     <a class="card-media is-wide" href="{{ route('work.projects.show', $project->slug) }}">
-        <img src="{{ epic_image($project->image, 'card') }}" alt="{{ $project->title }}" loading="lazy">
+        <img src="{{ epic_image($project->image, 'card') }}" alt="{{ $project->title }}" loading="lazy"{!! pic_style($project->image) !!}>
         <span class="badge {{ $project->status === 'completed' ? 'badge-outline' : 'badge-green' }}">{{ \App\Models\Project::STATUSES[$project->status] ?? $project->status }}</span>
     </a>
     <div class="card-body">

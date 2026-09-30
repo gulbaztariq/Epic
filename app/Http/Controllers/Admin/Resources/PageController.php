@@ -30,8 +30,9 @@ class PageController extends ResourceController
 
     protected function indexNote(): ?string
     {
-        return 'Page <strong>slugs</strong> connect each record to a page of the website (for example <code>about-us</code>).
-                Changing a slug of a built-in page will stop that page from showing its content, so only edit slugs for pages you created yourself.';
+        return 'Rename any page freely: its <strong>title</strong>, hero text and menu label can all be changed and the website keeps
+                finding it. The <strong>slug</strong> is a page\'s web address, so it can only be edited on pages you created yourself.
+                Built-in pages keep their address; to change what the menu says, edit the menu item.';
     }
 
     protected function columns(): array
@@ -53,7 +54,8 @@ class PageController extends ResourceController
             self::field('slug', 'Slug', 'text', [
                 'col' => 4,
                 'rules' => fn (?Page $record) => ['required', 'string', 'max:190', 'alpha_dash', Rule::unique('pages', 'slug')->ignore($record?->id)],
-                'hint' => 'Used by the website to find this page.',
+                'readonly' => fn (?Page $record) => (bool) $record?->isBuiltIn(),
+                'hint' => 'The page\'s web address. Fixed for built-in pages.',
             ]),
             self::field('menu_label', 'Short menu label', 'text', ['col' => 6, 'hint' => 'Optional shorter label for menus.']),
             self::field('sort', 'Display order', 'number', ['col' => 3, 'default' => 0]),
@@ -66,7 +68,10 @@ class PageController extends ResourceController
                 'hint' => 'On the home page each line becomes its own line, and the last line is highlighted in green.',
             ]),
             self::field('hero_subtitle', 'Hero text', 'textarea', ['col' => 12, 'rows' => 3]),
-            self::field('hero_image', 'Hero image', 'image', ['col' => 6, 'hint' => 'Recommended 1600×1000px or larger.']),
+            self::field('hero_image', 'Hero image', 'image', [
+                'col' => 6, 'aspect' => '16 / 7', 'auto' => 'cover',
+                'hint' => 'Recommended 1600×1000px or larger. Page headers fill the width by default; use Fit &amp; crop to change that.',
+            ]),
             self::field('quote', 'Highlight quote', 'textarea', ['col' => 6, 'rows' => 3]),
             self::field('quote_author', 'Quote attribution', 'text', ['col' => 6]),
 

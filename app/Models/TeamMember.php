@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 
 class TeamMember extends Model
 {
@@ -14,11 +15,37 @@ class TeamMember extends Model
 
     protected $casts = ['is_active' => 'boolean'];
 
+    /** Fallback names, and the page each group takes its live name from. */
     public const CATEGORIES = [
         'team' => 'EPIC Team',
-        'board' => 'Board of Governance',
+        'board' => 'Board of Directors',
         'advisory' => 'Advisory Council',
     ];
+
+    private const CATEGORY_PAGES = [
+        'team' => 'epic-team',
+        'board' => 'board',
+        'advisory' => 'advisory-council',
+    ];
+
+    /**
+     * The groups as the dashboard shows them. Each takes its name from the title
+     * of its page, so renaming a page in the dashboard renames the group too.
+     *
+     * @return array<string, string>
+     */
+    public static function categories(): array
+    {
+        try {
+            $titles = Page::whereIn('key', array_values(self::CATEGORY_PAGES))->pluck('title', 'key');
+        } catch (QueryException) {
+            $titles = collect(); // database not yet updated: use the default names
+        }
+
+        return collect(self::CATEGORIES)
+            ->map(fn (string $default, string $category) => $titles[self::CATEGORY_PAGES[$category]] ?? $default)
+            ->all();
+    }
 
     public function scopeCategory(Builder $query, string $category): Builder
     {

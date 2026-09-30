@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\QueryException;
 
 class Page extends Model
 {
     protected $fillable = [
-        'slug', 'title', 'menu_label', 'eyebrow', 'hero_title', 'hero_subtitle', 'hero_image',
+        'slug', 'key', 'title', 'menu_label', 'eyebrow', 'hero_title', 'hero_subtitle', 'hero_image',
         'intro', 'body', 'quote', 'quote_author', 'cta_text', 'cta_url',
         'meta_title', 'meta_description', 'is_published', 'sort',
     ];
@@ -32,12 +33,34 @@ class Page extends Model
     }
 
     /**
-     * Fetch a page by slug, falling back to an empty model so views never break
-     * if an admin removes a page record.
+     * Fetch one of the pages the website itself depends on, by its stable key.
+     *
+     * The key never changes, so an editor can rename the page, retitle it or
+     * change its slug without the site losing track of it. Databases from before
+     * keys existed are still found by slug. Falls back to an empty model so a
+     * view never breaks if the record has been removed.
      */
-    public static function findBySlug(string $slug): self
+    public static function builtIn(string $key): self
     {
-        return static::with('activeSections')->where('slug', $slug)->first() ?? new static(['title' => ucwords(str_replace('-', ' ', $slug))]);
+        try {
+            $page = static::with('activeSections')->where('key', $key)->first();
+        } catch (QueryException) {
+            // The update that adds the `key` column has not been applied yet. That is
+            // the moment between uploading new files and running the installer on
+            // hosting without SSH, and the live site must not error in it: fall back to
+            // the slug, which is what the site used before keys existed.
+            $page = null;
+        }
+
+        $page ??= static::with('activeSections')->where('slug', $key)->first();
+
+        return $page ?? new static(['title' => ucwords(str_replace('-', ' ', $key))]);
+    }
+
+    /** Whether the site itself relies on this page (its slug is then fixed). */
+    public function isBuiltIn(): bool
+    {
+        return filled($this->key);
     }
 
     public function getHeroHeadingAttribute(): string

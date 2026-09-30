@@ -23,7 +23,7 @@
             <div class="card-body">
                 <div class="form-grid">
                     @foreach ($fields as $key => $meta)
-                        @php($value = old($key, setting($key)))
+                        @php($value = old($key, setting($key, $meta['default'] ?? null)))
                         <div class="field col-{{ $meta['col'] ?? 12 }}">
                             <label for="s-{{ $key }}">{!! $meta['label'] !!}</label>
 
@@ -33,6 +33,20 @@
                                         <option value="{{ $optValue }}" @selected((string) $value === (string) $optValue)>{{ $optLabel }}</option>
                                     @endforeach
                                 </select>
+                            @elseif ($meta['type'] === 'color')
+                                <div class="color-field">
+                                    <input type="color" id="s-{{ $key }}" name="{{ $key }}" value="{{ $value }}" data-color-input>
+                                    <code data-color-readout>{{ $value }}</code>
+                                    @if (! empty($meta['default']))
+                                        <button class="btn btn-sm btn-outline" type="button" data-color-reset="{{ $meta['default'] }}">Reset</button>
+                                    @endif
+                                </div>
+                            @elseif ($meta['type'] === 'range')
+                                <div class="range-field">
+                                    <input type="range" id="s-{{ $key }}" name="{{ $key }}" value="{{ $value }}"
+                                           min="{{ $meta['min'] ?? 0 }}" max="{{ $meta['max'] ?? 100 }}" step="{{ $meta['step'] ?? 1 }}" data-range-input>
+                                    <output data-range-readout data-unit="{{ $meta['unit'] ?? '' }}">{{ $value }}{{ $meta['unit'] ?? '' }}</output>
+                                </div>
                             @elseif ($meta['type'] === 'textarea')
                                 <textarea class="control" id="s-{{ $key }}" name="{{ $key }}" rows="{{ $meta['rows'] ?? 4 }}"
                                           placeholder="{{ $meta['placeholder'] ?? '' }}">{{ $value }}</textarea>

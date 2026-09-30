@@ -20,7 +20,7 @@ class PublicationController extends Controller
             ->withQueryString();
 
         return view('site.publications.index', [
-            'page' => Page::findBySlug('publications'),
+            'page' => Page::builtIn('publications'),
             'publications' => $publications,
             // Built without the ordering scope: "SELECT DISTINCT type ... ORDER BY
             // published_at" is rejected by MySQL's ONLY_FULL_GROUP_BY mode.
@@ -40,7 +40,7 @@ class PublicationController extends Controller
     public function journal()
     {
         return view('site.publications.journal', [
-            'page' => Page::findBySlug('journal'),
+            'page' => Page::builtIn('journal'),
             'issues' => Publication::published()->collection('journal')->paginate(9),
         ]);
     }
@@ -48,7 +48,7 @@ class PublicationController extends Controller
     public function newsletter()
     {
         return view('site.publications.newsletter', [
-            'page' => Page::findBySlug('newsletter'),
+            'page' => Page::builtIn('newsletter'),
             'issues' => Publication::published()->collection('newsletter')->paginate(9),
         ]);
     }

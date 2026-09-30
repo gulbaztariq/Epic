@@ -54,7 +54,7 @@ class PartnerController extends ResourceController
             self::field('category', 'Category', 'text', ['col' => 6, 'placeholder' => 'University · Think tank · Government']),
             self::field('country', 'Country', 'text', ['col' => 6]),
             self::field('description', 'Description', 'textarea', ['col' => 12, 'rows' => 3, 'rules' => 'nullable|string|max:1000']),
-            self::field('logo', 'Logo', 'image', ['col' => 6]),
+            self::field('logo', 'Logo', 'image', ['col' => 6, 'adjust' => false]),
             self::field('website', 'Website', 'text', ['col' => 6]),
             self::field('signed_on', 'MoU signed on', 'date', ['col' => 4]),
             self::field('sort', 'Display order', 'number', ['col' => 4, 'default' => 0]),

@@ -13,7 +13,7 @@ class MediaController extends Controller
     public function press()
     {
         return view('site.media.press', [
-            'page' => Page::findBySlug('press-releases'),
+            'page' => Page::builtIn('press-releases'),
             'posts' => Post::published()->category('press_release')->paginate(9),
         ]);
     }
@@ -31,7 +31,7 @@ class MediaController extends Controller
     public function podcasts()
     {
         return view('site.media.podcasts', [
-            'page' => Page::findBySlug('podcast'),
+            'page' => Page::builtIn('podcast'),
             'episodes' => Podcast::published()->paginate(9),
         ]);
     }
@@ -51,7 +51,7 @@ class MediaController extends Controller
         $videos = Video::published()->paginate(9);
 
         return view('site.media.videos', [
-            'page' => Page::findBySlug('youtube'),
+            'page' => Page::builtIn('youtube'),
             'videos' => $videos,
             'featured' => Video::published()->where('is_featured', true)->first() ?? $videos->first(),
         ]);
@@ -60,7 +60,7 @@ class MediaController extends Controller
     public function gallery()
     {
         return view('site.media.gallery', [
-            'page' => Page::findBySlug('gallery'),
+            'page' => Page::builtIn('gallery'),
             'albums' => GalleryAlbum::published()->with('images')->paginate(12),
         ]);
     }

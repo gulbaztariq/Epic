@@ -19,15 +19,29 @@
         </form>
 
         @forelse ($album->images as $image)
-            <form class="image-row" action="{{ route('admin.gallery-albums.images.update', [$album, $image]) }}" method="post">
+            <form action="{{ route('admin.gallery-albums.images.update', [$album, $image]) }}" method="post">
                 @csrf
                 @method('PUT')
-                <img src="{{ uploaded_url($image->image) }}" alt="">
-                <input class="control" type="text" name="caption" value="{{ $image->caption }}" placeholder="Caption (optional)">
-                <input class="control" type="number" name="sort" value="{{ $image->sort }}" min="0" title="Display order">
-                <span style="display:flex;gap:6px">
-                    <button class="btn btn-outline btn-sm" type="submit">{!! icon('check') !!} Save</button>
-                </span>
+                <div class="image-row">
+                    <img src="{{ uploaded_url($image->image) }}" alt="" @if (pic_adjusted($image->image)) title="Fit & crop applied" @endif>
+                    <input class="control" type="text" name="caption" value="{{ $image->caption }}" placeholder="Caption (optional)">
+                    <input class="control" type="number" name="sort" value="{{ $image->sort }}" min="0" title="Display order">
+                    <span style="display:flex;gap:6px">
+                        <button class="btn btn-outline btn-sm" type="submit">{!! icon('check') !!} Save</button>
+                    </span>
+                </div>
+                <details class="pic-details" @if (pic_adjusted($image->image)) open @endif>
+                    <summary>Fit &amp; crop this photo</summary>
+                    <div class="pic-details-body">
+                        @include('admin.resource.picture-adjust', [
+                            'name' => 'image',
+                            'domId' => 'image-'.$image->id,
+                            'path' => $image->image,
+                            'aspect' => '4 / 3',
+                            'auto' => 'contain',
+                        ])
+                    </div>
+                </details>
             </form>
             <form action="{{ route('admin.gallery-albums.images.destroy', [$album, $image]) }}" method="post"
                   data-confirm="Remove this photo?" style="margin:-6px 0 12px">

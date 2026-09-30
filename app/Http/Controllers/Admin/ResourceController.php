@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\MediaService;
+use App\Support\Pictures;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -313,6 +314,11 @@ abstract class ResourceController extends Controller
                 continue;
             }
 
+            // Never trust a read-only field's posted value: it is display-only.
+            if (static::isReadonly($field, $record)) {
+                continue;
+            }
+
             switch ($field['type']) {
                 case 'checkbox':
                     $data[$name] = $request->boolean($name);
@@ -330,6 +336,13 @@ abstract class ResourceController extends Controller
                             $media->delete($record->{$name});
                         }
                         $data[$name] = null;
+                    }
+
+                    // How the picture is fitted, cropped and zoomed on the website. Saved
+                    // against whichever path the record ends up with, so a picture that
+                    // is replaced in the same save gets the choices made for it.
+                    if ($field['type'] === 'image' && ($field['adjust'] ?? true) && is_array($request->input('pic.'.$name))) {
+                        Pictures::save(array_key_exists($name, $data) ? $data[$name] : $record?->{$name}, $request->input('pic.'.$name));
                     }
                     break;
 
@@ -351,6 +364,14 @@ abstract class ResourceController extends Controller
         }
 
         return $data;
+    }
+
+    /** Whether a field is display-only for this record (`'readonly' => bool|fn (?Model $record): bool`). */
+    public static function isReadonly(array $field, ?Model $record): bool
+    {
+        $readonly = $field['readonly'] ?? false;
+
+        return (bool) ($readonly instanceof \Closure ? $readonly($record) : $readonly);
     }
 
     /* ------------------------------------------------------------------ */

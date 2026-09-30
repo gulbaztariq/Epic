@@ -43,7 +43,9 @@
 
                 <aside class="sidebar">
                     <div class="sidebar-box" style="padding:0;overflow:hidden">
-                        <img src="{{ epic_image($publication->cover_image, 'portrait') }}" alt="{{ $publication->title }}" style="width:100%">
+                        <div class="detail-picture is-portrait {{ pic_adjusted($publication->cover_image) ? 'is-framed' : '' }}" style="margin:0;border-radius:0">
+                            <img src="{{ epic_image($publication->cover_image, 'portrait') }}" alt="{{ $publication->title }}"{!! pic_style($publication->cover_image) !!}>
+                        </div>
                         <div style="padding:20px">
                             <span class="badge badge-blue">{{ $publication->type }}</span>
                             @if ($publication->downloadUrl())

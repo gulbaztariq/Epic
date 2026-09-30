@@ -13,12 +13,11 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $page = Page::findBySlug('home');
+        $page = Page::builtIn('home');
 
         return view('site.home', [
             'page' => $page,
             'focusAreas' => FocusArea::active()->get(),
-            'highlights' => ListItem::inGroup('hero_highlights'),
             'pillars' => ListItem::inGroup('entrepreneurship_pillars'),
             'stats' => Stat::active()->get(),
             'publications' => Publication::published()

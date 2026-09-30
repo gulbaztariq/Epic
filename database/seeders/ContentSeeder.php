@@ -56,12 +56,6 @@ class ContentSeeder extends Seeder
     protected function lists(): void
     {
         $lists = [
-            'hero_highlights' => [
-                ['Evidence for Policy', null, 'document'],
-                ['Ideas for People', null, 'lightbulb'],
-                ['Inclusive Growth for Pakistan', null, 'chart'],
-            ],
-
             'entrepreneurship_pillars' => [
                 ['Better Policy Environment', 'Remove barriers and enable growth', 'rocket'],
                 ['Access to Finance', 'Connect ideas with capital', 'partnership'],

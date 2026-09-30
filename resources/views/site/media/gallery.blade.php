@@ -15,7 +15,7 @@
                     @foreach ($albums as $album)
                         <article class="card">
                             <a class="card-media is-wide" href="{{ route('media.gallery.show', $album->slug) }}">
-                                <img src="{{ epic_image($album->cover, 'card') }}" alt="{{ $album->title }}" loading="lazy">
+                                <img src="{{ epic_image($album->cover, 'card') }}" alt="{{ $album->title }}" loading="lazy"{!! pic_style($album->cover) !!}>
                                 <span class="badge badge-navy">{{ $album->images->count() }} photos</span>
                             </a>
                             <div class="card-body">

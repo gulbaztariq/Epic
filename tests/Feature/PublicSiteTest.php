@@ -30,7 +30,7 @@ class PublicSiteTest extends TestCase
             ['/who-we-are/epic-principles'],
             ['/who-we-are/our-strengths'],
             ['/who-we-are/epic-team'],
-            ['/who-we-are/board-of-governance'],
+            ['/who-we-are/board-of-directors'],
             ['/who-we-are/advisory-council'],
             ['/what-we-do/themes'],
             ['/what-we-do/projects'],

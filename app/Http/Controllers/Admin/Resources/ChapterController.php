@@ -50,7 +50,7 @@ class ChapterController extends ResourceController
             self::field('country', 'Country', 'text', ['rules' => 'required|string|max:120', 'col' => 6]),
             self::field('city', 'City', 'text', ['col' => 6]),
             self::field('description', 'Description', 'textarea', ['col' => 12, 'rows' => 3, 'rules' => 'nullable|string|max:1000']),
-            self::field('image', 'Flag or image', 'image', ['col' => 6]),
+            self::field('image', 'Flag or image', 'image', ['col' => 6, 'adjust' => false]),
             self::field('status', 'Status', 'select', ['col' => 6, 'options' => Chapter::STATUSES, 'default' => 'active', 'rules' => 'required|string|max:40']),
             self::field('contact_name', 'Contact name', 'text', ['col' => 4]),
             self::field('contact_email', 'Contact email', 'email', ['col' => 4]),

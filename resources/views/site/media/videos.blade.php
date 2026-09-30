@@ -24,7 +24,7 @@
                     @foreach ($videos as $video)
                         <article class="card">
                             <a class="video-thumb" href="{{ $video->watch_url }}" target="_blank" rel="noopener">
-                                <img src="{{ $video->poster ?: epic_image(null, 'card') }}" alt="{{ $video->title }}" loading="lazy">
+                                <img src="{{ $video->poster ?: epic_image(null, 'card') }}" alt="{{ $video->title }}" loading="lazy"{!! pic_style($video->thumbnail) !!}>
                                 <span class="play">{!! icon('play') !!}</span>
                             </a>
                             <div class="card-body">

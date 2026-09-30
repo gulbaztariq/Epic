@@ -15,7 +15,7 @@
                     @foreach ($episodes as $episode)
                         <article class="card">
                             <a class="card-media is-wide" href="{{ route('media.podcast.show', $episode->slug) }}">
-                                <img src="{{ epic_image($episode->cover_image, 'card') }}" alt="{{ $episode->title }}" loading="lazy">
+                                <img src="{{ epic_image($episode->cover_image, 'card') }}" alt="{{ $episode->title }}" loading="lazy"{!! pic_style($episode->cover_image) !!}>
                                 @if ($episode->episode_number)<span class="badge badge-navy">EP {{ $episode->episode_number }}</span>@endif
                             </a>
                             <div class="card-body">
