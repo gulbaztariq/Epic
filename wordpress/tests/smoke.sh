@@ -29,7 +29,13 @@ cleanup() {
 }
 trap cleanup EXIT
 
-wp() { $WP_CLI --path="$SITE" --allow-root "$@"; }
+# Every WP-CLI call is announced (its subcommand only, never its arguments, which can hold
+# passwords) and capped, so a stall shows where it is instead of hanging the job silently.
+wp() {
+    printf '   wp %s %s\n' "${1:-}" "${2:-}" | sed 's/ -.*//' >&2
+    timeout "${WP_TIMEOUT:-300}" $WP_CLI --path="$SITE" --allow-root "$@" </dev/null
+}
+CURL=(curl --max-time 60)
 ok()   { printf ' ok   %s\n' "$*"; }
 fail() { printf 'FAIL  %s\n' "$*"; failed=$((failed + 1)); }
 check() { # check <name> <command...>
@@ -56,13 +62,15 @@ wp epic import "$ROOT/starter" >/dev/null
 wp epic seo >/dev/null
 wp rewrite flush --hard >/dev/null 2>&1 || wp rewrite flush >/dev/null
 
-php -S "127.0.0.1:$PORT" -t "$SITE" >"$SITE/server.log" 2>&1 &
+wp config set DISABLE_WP_CRON true --raw --quiet
+PHP_CLI_SERVER_WORKERS=4 php -S "127.0.0.1:$PORT" -t "$SITE" >"$SITE/server.log" 2>&1 &
 SERVER_PID=$!
-for _ in $(seq 1 30); do curl -fs -o /dev/null "$URL/" 2>/dev/null && break; sleep 0.5; done
+echo "== Starting the test server at $URL"
+for _ in $(seq 1 30); do "${CURL[@]}" -fs -o /dev/null "$URL/" 2>/dev/null && break; sleep 0.5; done
 
-status() { curl -s -o /dev/null -w '%{http_code}' "$1"; }
-body()   { curl -s "$1"; }
-redirect() { curl -s -o /dev/null -w '%{http_code} %{redirect_url}' "$1"; }
+status() { "${CURL[@]}" -s -o /dev/null -w '%{http_code}' "$1"; }
+body()   { "${CURL[@]}" -s "$1"; }
+redirect() { "${CURL[@]}" -s -o /dev/null -w '%{http_code} %{redirect_url}' "$1"; }
 
 echo "== Every page and item answers"
 # Container pages only pass the visitor on to their first real page.
@@ -85,11 +93,11 @@ done <<<"$urls"
 [ "$total" -ge 40 ] && ok "$total pages and items checked" || fail "only $total pages and items found"
 
 echo "== Old addresses"
-check "/p/{slug} redirects to the page"  bash -c "[[ \"\$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' $URL/p/privacy-policy)\" == \"301 $URL/privacy-policy\" ]]"
-check "board-of-governance redirects"    bash -c "[[ \"\$(curl -s -o /dev/null -w '%{http_code} %{redirect_url}' $URL/who-we-are/board-of-governance)\" == \"301 $URL/who-we-are/board-of-directors\" ]]"
-check "sitemap.xml redirects"            bash -c "[[ \"\$(curl -s -o /dev/null -w '%{http_code}' $URL/sitemap.xml)\" == 301 ]]"
-check "/?s= reaches the search page"     bash -c "[[ \"\$(curl -s -o /dev/null -w '%{redirect_url}' '$URL/?s=growth')\" == \"$URL/search?q=growth\" ]]"
-check "unknown address is a 404"         bash -c "[[ \"\$(curl -s -o /dev/null -w '%{http_code}' $URL/no-such-page-here)\" == 404 ]]"
+check "/p/{slug} redirects to the page"  bash -c "[[ \"\$(curl --max-time 60 -s -o /dev/null -w '%{http_code} %{redirect_url}' $URL/p/privacy-policy)\" == \"301 $URL/privacy-policy\" ]]"
+check "board-of-governance redirects"    bash -c "[[ \"\$(curl --max-time 60 -s -o /dev/null -w '%{http_code} %{redirect_url}' $URL/who-we-are/board-of-governance)\" == \"301 $URL/who-we-are/board-of-directors\" ]]"
+check "sitemap.xml redirects"            bash -c "[[ \"\$(curl --max-time 60 -s -o /dev/null -w '%{http_code}' $URL/sitemap.xml)\" == 301 ]]"
+check "/?s= reaches the search page"     bash -c "[[ \"\$(curl --max-time 60 -s -o /dev/null -w '%{redirect_url}' '$URL/?s=growth')\" == \"$URL/search?q=growth\" ]]"
+check "unknown address is a 404"         bash -c "[[ \"\$(curl --max-time 60 -s -o /dev/null -w '%{http_code}' $URL/no-such-page-here)\" == 404 ]]"
 
 echo "== Rank Math output"
 home="$(body "$URL/")"
@@ -99,11 +107,11 @@ check "canonical link"       grep -q '<link rel="canonical"' <<<"$home"
 check "Open Graph title"     grep -q 'property="og:title"' <<<"$home"
 check "Twitter card"         grep -q 'name="twitter:card"' <<<"$home"
 check "structured data"      grep -q 'application/ld+json' <<<"$home"
-check "sitemap index"        bash -c "curl -s $URL/sitemap_index.xml | grep -q '<sitemap>'"
-check "robots.txt sitemap"   bash -c "curl -s $URL/robots.txt | grep -q '^Sitemap: $URL/sitemap_index.xml'"
-check "search is noindex"    bash -c "curl -s '$URL/search?q=growth' | grep -qi 'noindex'"
+check "sitemap index"        bash -c "curl --max-time 60 -s $URL/sitemap_index.xml | grep -q '<sitemap>'"
+check "robots.txt sitemap"   bash -c "curl --max-time 60 -s $URL/robots.txt | grep -q '^Sitemap: $URL/sitemap_index.xml'"
+check "search is noindex"    bash -c "curl --max-time 60 -s '$URL/search?q=growth' | grep -qi 'noindex'"
 event="$(wp post list --post_type=epic_event --post_status=publish --field=url --posts_per_page=1)"
-check "event has Event schema" bash -c "curl -s '$event' | grep -q '\"@type\":\"Event\"'"
+check "event has Event schema" bash -c "curl --max-time 60 -s '$event' | grep -q '\"@type\":\"Event\"'"
 
 echo
 if [ "$failed" -gt 0 ]; then echo "$failed check(s) FAILED. Server log: $SITE/server.log"; KEEP=1; exit 1; fi
