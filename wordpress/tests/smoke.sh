@@ -114,5 +114,17 @@ event="$(wp post list --post_type=epic_event --post_status=publish --field=url -
 check "event has Event schema" bash -c "curl --max-time 60 -s '$event' | grep -q '\"@type\":\"Event\"'"
 
 echo
-if [ "$failed" -gt 0 ]; then echo "$failed check(s) FAILED. Server log: $SITE/server.log"; KEEP=1; exit 1; fi
+if [ "$failed" -gt 0 ]; then
+    echo "$failed check(s) FAILED. What the site said, for diagnosis:"
+    echo "-- php $(php -r 'echo PHP_VERSION;'), wordpress $(wp core version 2>/dev/null), permalinks '$(wp option get permalink_structure 2>/dev/null)'"
+    wp plugin list --fields=name,status,version 2>/dev/null || true
+    wp rewrite list --format=csv 2>/dev/null | grep -i sitemap | head -5 || true
+    for path in /sitemap.xml /sitemap_index.xml /robots.txt; do
+        echo "-- GET $path"
+        "${CURL[@]}" -si "$URL$path" | head -12 | cut -c1-200
+    done
+    echo "-- server log tail"; tail -n 8 "$SITE/server.log" | cut -c1-200
+    KEEP=1
+    exit 1
+fi
 echo "all passed"
