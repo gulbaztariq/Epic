@@ -71,8 +71,9 @@ jobs:
       - name: Lint the plugin, theme and exporter
         run: find wordpress -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
 
-      - name: Lint the migration script
-        run: bash -n wordpress/scripts/migrate-to-wordpress.sh
+      - name: Lint the shell scripts
+        run: |
+          for f in wordpress/scripts/*.sh wordpress/tests/*.sh; do bash -n "$f"; done
 
       - name: The theme's stylesheet and script are the Laravel ones, unchanged
         run: |

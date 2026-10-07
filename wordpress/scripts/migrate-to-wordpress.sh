@@ -35,6 +35,11 @@
 #   DOMAIN            e.g. epic.org.pk (default: from the Laravel site's APP_URL)
 #   SITE_URL          the full address, e.g. https://epic.org.pk
 #   ADMIN_EMAIL       the WordPress administrator's email (default: the Laravel super admin's)
+#   ADMIN_PASSWORD    the password for the WordPress user epicadmin. If unset, WordPress generates one and
+#                     it is printed once at the end. If set, it is passed to PHP through the environment
+#                     (never a command line) and is never printed.
+#   PRIVATE_LOG       yes = keep the administrator's email out of the final report (for runs whose output
+#                     is stored somewhere other people can read, such as CI logs)
 #   DB_HOST DB_PORT DB_NAME DB_USER DB_PASS
 #                     the MySQL database to use, only needed when there is no Laravel site to read it from
 #   REPO / REF        where the EPIC theme and plugin come from (default below)
@@ -335,6 +340,14 @@ ADMIN_PASS="$(grep -oE 'Admin password: .*' "$install_log" | head -n1 | sed 's/^
 [ -n "$ADMIN_PASS" ] || stop "WordPress did not install (see $install_log)."
 rm -f "$install_log"
 
+PASS_SUPPLIED=""
+if [ -n "${ADMIN_PASSWORD:-}" ]; then
+    EPIC_NEW_PASS="$ADMIN_PASSWORD" wp eval 'wp_set_password( (string) getenv( "EPIC_NEW_PASS" ), get_user_by( "login", "epicadmin" )->ID );' >/dev/null 2>&1 \
+        || stop "The administrator password could not be set. Nothing was swapped; work files are in $MIG"
+    ADMIN_PASS=""; PASS_SUPPLIED="yes"
+    unset ADMIN_PASSWORD
+fi
+
 wpq plugin activate epic-core
 wpq theme activate epic
 wpq plugin activate seo-by-rank-math
@@ -471,15 +484,27 @@ if [ "$failures" -gt 0 ] && [ "$NO_ROLLBACK" != "yes" ]; then
 fi
 
 # ------------------------------------------------------------------ report
+if [ -n "$PASS_SUPPLIED" ]; then
+    LOGIN_LINES="    password  the one you supplied"
+else
+    LOGIN_LINES="    password  $ADMIN_PASS"
+fi
+[ "${PRIVATE_LOG:-no}" = "yes" ] || LOGIN_LINES="$LOGIN_LINES
+    email     $ADMIN_EMAIL"
+if [ -n "$PASS_SUPPLIED" ]; then
+    LOGIN_LINES="$LOGIN_LINES
+  >> Sign in with that password, then consider changing it (Users > Profile)."
+else
+    LOGIN_LINES="$LOGIN_LINES
+  >> Sign in, then change the password (Users > Profile). This is the only time it is shown."
+fi
 step "Done"
 cat <<EOF
 
   The website is now running on WordPress:   $SITE_URL
   Sign in:                                   $SITE_URL/wp-admin
     user      epicadmin
-    password  $ADMIN_PASS
-    email     $ADMIN_EMAIL
-  >> Sign in, then change the password (Users > Profile). This is the only time it is shown.
+$LOGIN_LINES
 
   Next
     1. Rank Math SEO is configured. Optionally connect a free Rank Math account (Rank Math > Dashboard)

@@ -1,0 +1,59 @@
+name: Deploy WordPress to Hostinger
+
+# Manual only. Runs wordpress/scripts/migrate-to-wordpress.sh on the Hostinger account over
+# SSH, from a GitHub runner (which, unlike some environments, can reach the server).
+#
+#   report  looks at the server and says what it would do. Changes nothing.
+#   deploy  exports the Laravel site, builds WordPress beside it and swaps it in, rolling back
+#           by itself if the check fails.
+#
+# Secrets (Settings > Secrets and variables > Actions), none of them ever in the repository:
+#   HOSTINGER_HOST, HOSTINGER_PORT, HOSTINGER_USER   the SSH details from hPanel
+#   HOSTINGER_SSH_KEY         the private key whose public half is in hPanel > SSH Access
+#   EPIC_WP_ADMIN_PASSWORD    the password for the new WordPress user "epicadmin" (deploy only)
+#   HOSTINGER_KNOWN_HOSTS     optional: the server's host key, from  ssh-keyscan -p PORT HOST
+#
+# This repository is public and so are its workflow logs. The scripts print no password and no
+# email, and GitHub hides the secret values above wherever they would appear.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "report = look only, change nothing. deploy = move epic.org.pk to WordPress."
+        type: choice
+        options:
+          - report
+          - deploy
+        default: report
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hostinger-deploy
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    name: ${{ inputs.mode }} on Hostinger
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Run the migration script on the server
+        env:
+          HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+          HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+          HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+          HOSTINGER_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          HOSTINGER_KNOWN_HOSTS: ${{ secrets.HOSTINGER_KNOWN_HOSTS }}
+          ADMIN_PASSWORD: ${{ secrets.EPIC_WP_ADMIN_PASSWORD }}
+          MODE: ${{ inputs.mode }}
+          REF: ${{ github.sha }}
+        run: bash wordpress/scripts/run-on-hostinger.sh

@@ -79,6 +79,9 @@ routes here, keep it in step:
   `wordpress-site`); the Playwright scripts beside it need a throw-away site.
 - The migration script never deletes the old site, never prints the database password and
   never takes a password on a command line. Keep it that way.
+- The "Deploy WordPress to Hostinger" workflow (`run-on-hostinger.sh`) runs that script over SSH
+  from CI. Its logs are public, so nothing it prints may contain a password or email; SSH
+  details and keys live only in GitHub secrets.
 
 ## Adding a managed content type
 

@@ -54,6 +54,26 @@ Settings are environment variables listed at the top of the script (`SITE`, `DOC
 command line, `curl`, `tar`, `unzip` and outbound HTTPS to wordpress.org, github.com and
 downloads.wordpress.org; it checks each and stops before changing anything if one is missing.
 
+### Publishing from GitHub instead of a terminal
+
+The workflow **Deploy WordPress to Hostinger** (Actions tab > Run workflow) runs the same script
+over SSH from a GitHub runner, so no terminal is needed and an assistant with access to the repo
+can run it for you. It does nothing until you add these as **repository secrets** (Settings >
+Secrets and variables > Actions). Never put any of them in the repo or in a chat.
+
+| Secret | Value |
+| --- | --- |
+| `HOSTINGER_HOST`, `HOSTINGER_PORT`, `HOSTINGER_USER` | from hPanel > Advanced > SSH Access (port is 65002) |
+| `HOSTINGER_SSH_KEY` | the **private** key, whole file. Make a dedicated pair on your Mac: `ssh-keygen -t ed25519 -N "" -C epic-deploy -f ~/epic-deploy`, add `~/epic-deploy.pub` under hPanel > SSH Access, then paste the contents of `~/epic-deploy` here |
+| `EPIC_WP_ADMIN_PASSWORD` | a password of 12+ characters you choose for the new WordPress user `epicadmin` (deploy only) |
+| `HOSTINGER_KNOWN_HOSTS` | optional but better: the output of `ssh-keyscan -p 65002 <host>`, to pin the server's identity |
+
+Run it with **mode: report** first. It looks at the server and changes nothing; check that the
+`web folder:` line names epic.org.pk's folder (the account hosts other sites). Then run it with
+**mode: deploy**. Workflow logs of a public repository are public, so the script prints no
+password and no email, and GitHub hides the secret values wherever they would appear. Delete the
+key from hPanel when you are done with it.
+
 ### After the swap
 
 - Sign in at `https://epic.org.pk/wp-admin` as `epicadmin` with the password the script
