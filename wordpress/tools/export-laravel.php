@@ -36,7 +36,7 @@ const TABLES = [
     'image_settings',
 ];
 
-function fail(string $message): never
+function fail(string $message)
 {
     fwrite(STDERR, "export: {$message}\n");
     exit(1);
