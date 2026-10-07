@@ -46,3 +46,80 @@ jobs:
 
       - name: Execute tests
         run: php artisan test
+
+  wordpress-lint:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php: [8.0, 8.4]
+
+    name: WordPress port, lint (PHP ${{ matrix.php }})
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+
+      - name: Lint the plugin, theme and exporter
+        run: find wordpress -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+
+      - name: Lint the migration script
+        run: bash -n wordpress/scripts/migrate-to-wordpress.sh
+
+      - name: The theme's stylesheet and script are the Laravel ones, unchanged
+        run: |
+          cmp public/css/site.css wordpress/themes/epic/assets/css/site.css
+          cmp public/js/site.js wordpress/themes/epic/assets/js/site.js
+
+      - name: No literal XML declaration in a PHP file (it breaks hosts with short_open_tag on)
+        run: "! grep -rn '<?xml' wordpress --include=*.php"
+
+  wordpress-site:
+    runs-on: ubuntu-latest
+    needs: wordpress-lint
+
+    name: WordPress port, every page with Rank Math
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+          MYSQL_DATABASE: epic_smoke
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: 8.3
+          extensions: mysqli, mbstring, gd, zip, curl, dom, xml, fileinfo
+          tools: wp-cli
+          coverage: none
+
+      - name: Build a WordPress site and check every page
+        env:
+          DB_HOST: 127.0.0.1:3306
+          DB_USER: root
+          DB_PASS: ""
+          DB_NAME: epic_smoke
+        run: bash wordpress/tests/smoke.sh

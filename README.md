@@ -42,6 +42,10 @@ Run the test suite with `php artisan test`.
 See **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step Hostinger instructions,
 or **[RAILWAY.md](RAILWAY.md)** to deploy the container image to Railway.
 
+**WordPress edition.** The `wordpress/` folder holds the same site as a WordPress theme and
+plugin with Rank Math SEO, plus a script that migrates a live Hostinger install over SSH
+(dry run by default, automatic rollback). See **[wordpress/README.md](wordpress/README.md)**.
+
 Neither SSH nor cron is required:
 
 - **Installing** — set `EPIC_INSTALL_TOKEN` in `.env` and open

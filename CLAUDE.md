@@ -60,6 +60,26 @@ Read `README.md` for the feature map and `DEPLOYMENT.md` for Hostinger.
   8.4.1) on a newer local PHP, and `composer install` then failed on every 8.3
   host.
 
+## The WordPress edition (`wordpress/`)
+
+A WordPress theme (`themes/epic`) and plugin (`plugins/epic-core`) reproduce this site, with
+Rank Math for SEO, and `scripts/migrate-to-wordpress.sh` migrates a live install over SSH.
+Read `wordpress/README.md` before touching it. When you change public content, fields or
+routes here, keep it in step:
+
+- `Epic_Schema` (`wordpress/plugins/epic-core/includes/class-epic-schema.php`) mirrors the
+  Laravel models, page keys and settings; `tools/export-laravel.php` reads the tables. A new
+  table or column needs a line in both, and in `Epic_Importer`.
+- `themes/epic/assets/css/site.css` and `js/site.js` are copies of `public/css/site.css` and
+  `public/js/site.js`. Change them here first and copy them across; do not fork them.
+- Never name a variable `$page`, `$more`, `$term` or `$post` in a theme template: WordPress
+  includes templates at global scope, so it overwrites the WordPress global. Use `$epic_`.
+- Pages are found by key (`_epic_key`), never by slug, as `Page::builtIn()` does here.
+- `wordpress/tests/smoke.sh` builds a throw-away WordPress and crawls it (CI job
+  `wordpress-site`); the Playwright scripts beside it need a throw-away site.
+- The migration script never deletes the old site, never prints the database password and
+  never takes a password on a command line. Keep it that way.
+
 ## Adding a managed content type
 
 1. Migration + model (use `App\Models\Concerns\HasSlug` when it needs a slug).

@@ -1,0 +1,68 @@
+/* EPIC Core: edit-screen styling. */
+
+.epic-body-label { margin: 18px 0 6px; font-weight: 600; font-size: 14px; color: #1d2327; }
+
+.epic-fields { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px 18px; }
+.epic-field { grid-column: span var(--col, 12); min-width: 0; }
+.epic-section { grid-column: 1 / -1; margin: 10px 0 0; padding: 10px 0 0; border-top: 1px solid #dcdcde; font-size: 14px; }
+.epic-fields > .epic-section:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.epic-label { display: block; margin-bottom: 4px; font-weight: 600; }
+.epic-field .description { margin: 5px 0 0; }
+.epic-field input[type=text], .epic-field input[type=email], .epic-field textarea, .epic-field select { max-width: 100%; }
+.epic-check { display: inline-flex; align-items: center; gap: 6px; padding-top: 22px; font-weight: 600; }
+@media (max-width: 900px) { .epic-field { grid-column: span 12; } }
+
+.epic-badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #e8f1fa; color: #13366e; font-size: 12px; font-weight: 600; }
+.epic-yes { color: #1a7f37; font-weight: 600; }
+.epic-no { color: #8c8f94; }
+.epic-thumb { display: block; width: 56px; height: 40px; object-fit: cover; border-radius: 3px; background: #f0f0f1; }
+.column-epic_photo .epic-thumb, .column-epic_logo .epic-thumb { object-fit: contain; }
+.epic-icon-cell svg { width: 22px; height: 22px; color: #0f6fc0; }
+
+.epic-icon-pick { display: inline-flex; align-items: center; gap: 10px; }
+.epic-icon-preview svg { width: 30px; height: 30px; color: #0f6fc0; display: block; }
+
+/* Pictures */
+.epic-image-bar { margin: 2px 0 8px; }
+.epic-image-plain img { display: block; max-width: 220px; max-height: 120px; margin-top: 8px; background: #f6f7f7; border: 1px solid #dcdcde; padding: 4px; }
+.epic-adjust { padding: 12px; border: 1px solid #dcdcde; border-radius: 4px; background: #f8fbfe; }
+.epic-adjust[hidden] { display: none; }
+.epic-adjust-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.epic-adjust-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.epic-frame { position: relative; overflow: hidden; background: #e3e8ee; border: 1px solid #c3c4c7; border-radius: 3px; cursor: crosshair; }
+.epic-frame img { display: block; width: 100%; height: 100%; }
+.epic-dot { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 2px solid #fff; border-radius: 50%; background: #0f6fc0; box-shadow: 0 0 0 1px rgba(0,0,0,.4); pointer-events: none; }
+.epic-adjust-controls { display: grid; gap: 10px; }
+.epic-adjust-controls label { display: grid; gap: 4px; font-weight: 600; font-size: 12px; }
+.epic-adjust-controls output { float: right; font-variant-numeric: tabular-nums; color: #13366e; }
+.epic-adjust-controls input[type=range] { width: 100%; accent-color: #0f6fc0; }
+@media (max-width: 782px) { .epic-adjust-body { grid-template-columns: 1fr; } }
+
+/* Files */
+.epic-file-current { margin: 0 0 8px; }
+.epic-file-link { display: block; margin-top: 8px; font-size: 12px; }
+
+/* Galleries */
+.epic-gallery-bar { margin-bottom: 10px; }
+.epic-gallery-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.epic-gallery-item { position: relative; padding: 8px; border: 1px solid #dcdcde; border-radius: 4px; background: #fff; cursor: move; }
+.epic-gallery-item img { display: block; width: 100%; height: 110px; object-fit: cover; margin-bottom: 8px; border-radius: 3px; background: #f0f0f1; }
+.epic-gallery-item details { margin: 6px 0; font-size: 12px; }
+.epic-gallery-adjust { display: grid; gap: 6px; margin-top: 6px; }
+.epic-gallery-adjust label { display: grid; gap: 2px; }
+.epic-gallery-placeholder { min-height: 190px; border: 2px dashed #c3c4c7; border-radius: 4px; background: #f6f7f7; }
+
+/* Settings screen */
+.epic-settings .epic-fields { max-width: 960px; margin-top: 16px; }
+.epic-setting-image img { display: block; max-width: 200px; max-height: 80px; margin: 0 0 8px; padding: 6px; background: #f6f7f7; border: 1px solid #dcdcde; }
+.epic-color { display: inline-flex; align-items: center; gap: 10px; }
+.epic-color input[type=color] { width: 54px; height: 34px; padding: 0; }
+.epic-range { display: flex; align-items: center; gap: 12px; }
+.epic-range input[type=range] { flex: 1; accent-color: #0f6fc0; }
+
+/* Overview */
+.epic-overview { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; max-width: 1100px; margin: 18px 0; }
+.epic-card { display: block; padding: 16px 18px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; color: #1d2327; text-decoration: none; }
+.epic-card:hover { border-color: #0f6fc0; box-shadow: 0 2px 8px rgba(15,111,192,.12); }
+.epic-card strong { display: block; font-size: 26px; line-height: 1.1; color: #13366e; }
+.epic-card span { color: #50575e; }

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675" role="img" aria-label="EPIC placeholder image">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#133a76"/><stop offset="0.55" stop-color="#0f6fc0"/><stop offset="1" stop-color="#0aa1d8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#g)"/>
+  <g opacity="0.14" fill="#ffffff">
+    <path d="M870 520 C 870 300 1010 150 1240 150 C 1240 400 1100 520 870 520 Z"/>
+    <path d="M0 640 C 120 600 200 660 320 620 L320 675 L0 675 Z"/>
+  </g>
+  <g fill="#ffffff" opacity="0.92" font-family="Montserrat, Segoe UI, Arial, sans-serif">
+    <text x="80" y="330" font-size="120" font-weight="800" letter-spacing="6">EPIC</text>
+    <text x="84" y="382" font-size="26" font-weight="600" letter-spacing="2.5" opacity="0.8">ECONOMIC POLICY AND INNOVATION CENTRE</text>
+  </g>
+  <rect x="80" y="404" width="120" height="6" rx="3" fill="#7ac943"/>
+</svg>

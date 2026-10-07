@@ -285,3 +285,13 @@ statistics live in the database, so the database export covers them too.
 | Visitor countries stay empty | The cron job in step 5 is missing, or outbound HTTPS is blocked. Press **Resolve locations** on the analytics screen to test it. |
 | Visitor counts look wrong by a few hours | `APP_TIMEZONE` is not set to your local zone. Set it, then run `php artisan optimize:clear`. |
 | 404 on every page except the home page | `mod_rewrite` / `.htaccess` is not being read. Confirm `public/.htaccess` was uploaded (hidden files must be visible in File Manager). |
+
+---
+
+## Moving the site to WordPress (optional)
+
+The `wordpress/` folder is a WordPress edition of this site, with the same design, content
+and addresses, and Rank Math for SEO. Over SSH one script exports this site, builds the
+WordPress site next to it, swaps it in and tests it, rolling back by itself if the test
+fails. The Laravel files and database are kept untouched. Full steps, what it does and how
+to roll back: **[wordpress/README.md](wordpress/README.md)**.

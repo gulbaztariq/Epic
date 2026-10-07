@@ -1,0 +1,24 @@
+/*
+ * The few rules WordPress itself needs on top of the original design (site.css, unchanged).
+ */
+
+/* Accessibility helper WordPress and plugins rely on. */
+.screen-reader-text {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden; clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+/* Alignment classes the classic editor adds to pictures inside page and article copy. They never
+   appear in the imported content, so the rules only come into play when an editor aligns a picture. */
+.prose .alignleft { float: left; margin: .3rem 1.4rem 1rem 0; max-width: 50%; }
+.prose .alignright { float: right; margin: .3rem 0 1rem 1.4rem; max-width: 50%; }
+.prose .aligncenter { display: block; margin-inline: auto; }
+.prose:has(.alignleft, .alignright)::after { content: ""; display: table; clear: both; }
+.prose .wp-caption { max-width: 100%; }
+.prose .wp-caption-text { margin-top: .5rem; font-size: .88rem; text-align: center; }
+
+/* The WordPress toolbar pushes the page down; keep anchors clear of the sticky header. */
+html { scroll-padding-top: calc(var(--header-h, 80px) + 12px); }

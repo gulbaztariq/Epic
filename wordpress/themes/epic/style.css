@@ -1,0 +1,15 @@
+/*
+Theme Name:   EPIC
+Theme URI:    https://epic.org.pk
+Description:  The Economic Policy and Innovation Centre website: the same design as the original Laravel site, run on WordPress. Requires the EPIC Core plugin; works with Rank Math SEO.
+Author:       EPIC
+Version:      1.0.0
+Requires at least: 6.0
+Requires PHP: 8.0
+License:      GPL-2.0-or-later
+Text Domain:  epic
+
+The stylesheet the visitor sees is assets/css/site.css (unchanged from the Laravel site)
+and assets/css/wordpress.css (the few rules WordPress itself needs). This file only
+identifies the theme.
+*/
