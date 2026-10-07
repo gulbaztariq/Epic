@@ -63,7 +63,7 @@ wp epic seo >/dev/null
 wp rewrite flush --hard >/dev/null 2>&1 || wp rewrite flush >/dev/null
 
 wp config set DISABLE_WP_CRON true --raw --quiet
-PHP_CLI_SERVER_WORKERS=4 php -S "127.0.0.1:$PORT" -t "$SITE" >"$SITE/server.log" 2>&1 &
+PHP_CLI_SERVER_WORKERS=4 php -S "127.0.0.1:$PORT" -t "$SITE" "$HERE/router.php" >"$SITE/server.log" 2>&1 &
 SERVER_PID=$!
 echo "== Starting the test server at $URL"
 for _ in $(seq 1 30); do "${CURL[@]}" -fs -o /dev/null "$URL/" 2>/dev/null && break; sleep 0.5; done
